@@ -19,7 +19,7 @@ export class RecommendationApi {
     limit?: number,
     offset?: number,
     marketplaceId?: string
-  ) {
+  ): Promise<unknown> {
     const params: Record<string, string | number> = {};
     if (filter) params.filter = filter;
     if (limit) params.limit = limit;

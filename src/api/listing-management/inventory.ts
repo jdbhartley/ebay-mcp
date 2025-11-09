@@ -2,6 +2,11 @@ import type {
   EbayOfferDetailsWithKeys,
   InventoryItem,
 } from '../../types/ebay/sell/listingManagement/inventoryAPI/inventory-api-global-types.js';
+import type { GetInventoryItemResponse } from '../../types/ebay/sell/listingManagement/inventoryAPI/inventory-item/get-inventory-item.js';
+import type { GetInventoryItemsResponse } from '../../types/ebay/sell/listingManagement/inventoryAPI/inventory-item/get-inventory-items.js';
+import type { CreateOfferResponse } from '../../types/ebay/sell/listingManagement/inventoryAPI/offer/create-offer.js';
+import type { GetOffersResponse } from '../../types/ebay/sell/listingManagement/inventoryAPI/offer/get-offers.js';
+import type { PublishResponse } from '../../types/ebay/sell/listingManagement/inventoryAPI/offer/publish-offer.js';
 import { EbayApiClient } from '../client.js';
 
 /**
@@ -16,56 +21,56 @@ export class InventoryApi {
   /**
    * Get all inventory items
    */
-  async getInventoryItems(limit?: number, offset?: number) {
+  async getInventoryItems(limit?: number, offset?: number): Promise<GetInventoryItemsResponse> {
     const params: Record<string, number> = {};
     if (limit) params.limit = limit;
     if (offset) params.offset = offset;
-    return this.client.get(`${this.basePath}/inventory_item`, params);
+    return this.client.get<GetInventoryItemsResponse>(`${this.basePath}/inventory_item`, params);
   }
 
   /**
    * Get a specific inventory item
    */
-  async getInventoryItem(sku: string) {
-    return this.client.get(`${this.basePath}/inventory_item/${sku}`);
+  async getInventoryItem(sku: string): Promise<GetInventoryItemResponse> {
+    return this.client.get<GetInventoryItemResponse>(`${this.basePath}/inventory_item/${sku}`);
   }
 
   /**
    * Create or replace an inventory item
    */
-  async createOrReplaceInventoryItem(sku: string, inventoryItem: InventoryItem) {
-    return this.client.put(`${this.basePath}/inventory_item/${sku}`, inventoryItem);
+  async createOrReplaceInventoryItem(sku: string, inventoryItem: InventoryItem): Promise<void> {
+    return this.client.put<void>(`${this.basePath}/inventory_item/${sku}`, inventoryItem);
   }
 
   /**
    * Delete an inventory item
    */
-  async deleteInventoryItem(sku: string) {
-    return this.client.delete(`${this.basePath}/inventory_item/${sku}`);
+  async deleteInventoryItem(sku: string): Promise<void> {
+    return this.client.delete<void>(`${this.basePath}/inventory_item/${sku}`);
   }
 
   /**
    * Get all offers
    */
-  async getOffers(sku?: string, marketplaceId?: string, limit?: number) {
+  async getOffers(sku?: string, marketplaceId?: string, limit?: number): Promise<GetOffersResponse> {
     const params: Record<string, string | number> = {};
     if (sku) params.sku = sku;
     if (marketplaceId) params.marketplace_id = marketplaceId;
     if (limit) params.limit = limit;
-    return this.client.get(`${this.basePath}/offer`, params);
+    return this.client.get<GetOffersResponse>(`${this.basePath}/offer`, params);
   }
 
   /**
    * Create an offer
    */
-  async createOffer(offer: EbayOfferDetailsWithKeys) {
-    return this.client.post(`${this.basePath}/offer`, offer);
+  async createOffer(offer: EbayOfferDetailsWithKeys): Promise<CreateOfferResponse> {
+    return this.client.post<CreateOfferResponse>(`${this.basePath}/offer`, offer);
   }
 
   /**
    * Publish an offer
    */
-  async publishOffer(offerId: string) {
-    return this.client.post(`${this.basePath}/offer/${offerId}/publish`);
+  async publishOffer(offerId: string): Promise<PublishResponse> {
+    return this.client.post<PublishResponse>(`${this.basePath}/offer/${offerId}/publish`);
   }
 }

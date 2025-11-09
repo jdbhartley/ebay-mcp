@@ -54,9 +54,9 @@ export class EbayApiClient {
   /**
    * Make a GET request to eBay API
    */
-  async get<T = any>(
+  async get<T = unknown>(
     endpoint: string,
-    params?: Record<string, any>,
+    params?: Record<string, unknown>,
   ): Promise<T> {
     const response = await this.httpClient.get<T>(endpoint, { params });
     return response.data;
@@ -65,9 +65,9 @@ export class EbayApiClient {
   /**
    * Make a POST request to eBay API
    */
-  async post<T = any>(
+  async post<T = unknown>(
     endpoint: string,
-    data?: any,
+    data?: unknown,
     config?: AxiosRequestConfig,
   ): Promise<T> {
     const response = await this.httpClient.post<T>(endpoint, data, config);
@@ -77,7 +77,7 @@ export class EbayApiClient {
   /**
    * Make a PUT request to eBay API
    */
-  async put<T = any>(endpoint: string, data?: any): Promise<T> {
+  async put<T = unknown>(endpoint: string, data?: unknown): Promise<T> {
     const response = await this.httpClient.put<T>(endpoint, data);
     return response.data;
   }
@@ -85,7 +85,7 @@ export class EbayApiClient {
   /**
    * Make a DELETE request to eBay API
    */
-  async delete<T = any>(endpoint: string): Promise<T> {
+  async delete<T = unknown>(endpoint: string): Promise<T> {
     const response = await this.httpClient.delete<T>(endpoint);
     return response.data;
   }

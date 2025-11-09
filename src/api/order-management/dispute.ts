@@ -1,4 +1,4 @@
-import type { PaymentDispute } from "../../types/ebay/sell/order-management/dispute-types.js";
+import type { AcceptPaymentDisputeRequest, ContestPaymentDisputeRequest, DisputeSummaryResponse, PaymentDispute, PaymentDisputeActivityHistory } from "../../types/ebay/sell/order-management/dispute-types.js";
 import type { EbayApiClient } from "../client.js";
 
 /**

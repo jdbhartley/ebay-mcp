@@ -1,23 +1,23 @@
-import { EbayApiClient } from './client.js';
-import { AccountApi } from './account-management/account.js';
-import { InventoryApi } from './listing-management/inventory.js';
-import { FulfillmentApi } from './order-management/fulfillment.js';
-import { DisputeApi } from './order-management/dispute.js';
-import { MarketingApi } from './marketing-and-promotions/marketing.js';
-import { RecommendationApi } from './marketing-and-promotions/recommendation.js';
-import { AnalyticsApi } from './analytics-and-report/analytics.js';
-import { MetadataApi } from './listing-metadata/metadata.js';
-import { TaxonomyApi } from './listing-metadata/taxonomy.js';
-import { NegotiationApi } from './communication/negotiation.js';
-import { MessageApi } from './communication/message.js';
-import { NotificationApi } from './communication/notification.js';
-import { FeedbackApi } from './communication/feedback.js';
-import { IdentityApi } from './other/identity.js';
-import { ComplianceApi } from './other/compliance.js';
-import { VeroApi } from './other/vero.js';
-import { TranslationApi } from './other/translation.js';
-import { EDeliveryApi } from './other/edelivery.js';
-import { EbayConfig } from '../types/ebay.js';
+import type { EbayConfig } from "../types/ebay.js";
+import { AccountApi } from "./account-management/account.js";
+import { AnalyticsApi } from "./analytics-and-report/analytics.js";
+import { EbayApiClient } from "./client.js";
+import { FeedbackApi } from "./communication/feedback.js";
+import { MessageApi } from "./communication/message.js";
+import { NegotiationApi } from "./communication/negotiation.js";
+import { NotificationApi } from "./communication/notification.js";
+import { InventoryApi } from "./listing-management/inventory.js";
+import { MetadataApi } from "./listing-metadata/metadata.js";
+import { TaxonomyApi } from "./listing-metadata/taxonomy.js";
+import { MarketingApi } from "./marketing-and-promotions/marketing.js";
+import { RecommendationApi } from "./marketing-and-promotions/recommendation.js";
+import { DisputeApi } from "./order-management/dispute.js";
+import { FulfillmentApi } from "./order-management/fulfillment.js";
+import { ComplianceApi } from "./other/compliance.js";
+import { EDeliveryApi } from "./other/edelivery.js";
+import { IdentityApi } from "./other/identity.js";
+import { TranslationApi } from "./other/translation.js";
+import { VeroApi } from "./other/vero.js";
 
 /**
  * Main API facade providing access to all eBay Sell APIs
@@ -77,22 +77,22 @@ export class EbaySellerApi {
   }
 }
 
-export * from './client.js';
-export * from './account-management/account.js';
-export * from './listing-management/inventory.js';
-export * from './order-management/fulfillment.js';
-export * from './order-management/dispute.js';
-export * from './marketing-and-promotions/marketing.js';
-export * from './marketing-and-promotions/recommendation.js';
-export * from './analytics-and-report/analytics.js';
-export * from './listing-metadata/metadata.js';
-export * from './listing-metadata/taxonomy.js';
-export * from './communication/negotiation.js';
-export * from './communication/message.js';
-export * from './communication/notification.js';
-export * from './communication/feedback.js';
-export * from './other/identity.js';
-export * from './other/compliance.js';
-export * from './other/vero.js';
-export * from './other/translation.js';
-export * from './other/edelivery.js';
+export * from "./account-management/account.js";
+export * from "./analytics-and-report/analytics.js";
+export * from "./client.js";
+export * from "./communication/feedback.js";
+export * from "./communication/message.js";
+export * from "./communication/negotiation.js";
+export * from "./communication/notification.js";
+export * from "./listing-management/inventory.js";
+export * from "./listing-metadata/metadata.js";
+export * from "./listing-metadata/taxonomy.js";
+export * from "./marketing-and-promotions/marketing.js";
+export * from "./marketing-and-promotions/recommendation.js";
+export * from "./order-management/dispute.js";
+export * from "./order-management/fulfillment.js";
+export * from "./other/compliance.js";
+export * from "./other/edelivery.js";
+export * from "./other/identity.js";
+export * from "./other/translation.js";
+export * from "./other/vero.js";

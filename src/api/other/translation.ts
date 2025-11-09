@@ -1,13 +1,13 @@
-import { EbayApiClient } from '../client.js';
+import type { EbayApiClient } from "../client.js";
 
 /**
  * Translation API - Translation services
  * Based on: docs/sell-apps/other-apis/commerce_translation_v1_beta_oas3.json
  */
 export class TranslationApi {
-  private readonly basePath = '/commerce/translation/v1';
+  private readonly basePath = "/commerce/translation/v1";
 
-  constructor(private client: EbayApiClient) {}
+  constructor(private client: EbayApiClient) { }
 
   /**
    * Translate listing text
@@ -16,13 +16,13 @@ export class TranslationApi {
     from: string,
     to: string,
     translationContext: string,
-    text: string[]
+    text: string[],
   ) {
     return this.client.post(`${this.basePath}/translate`, {
       from,
       to,
       translationContext,
-      text
+      text,
     });
   }
 }

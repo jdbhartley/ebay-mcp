@@ -1,6 +1,7 @@
 import type { components } from "../../types/openapi-schemas/sell_marketing_v1_oas3.js";
 import type { EbayApiClient } from "../client.js";
 
+
 type AdGroupRequest = components["schemas"]["CreateAdGroupRequest"];
 type BulkCreateAdRequest = components["schemas"]["BulkCreateAdRequest"];
 type BulkCreateAdsByInventoryReferenceRequest = components["schemas"]["BulkCreateAdsByInventoryReferenceRequest"];

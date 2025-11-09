@@ -107,7 +107,7 @@ export class DisputeApi {
     return this.client.post<FileEvidence>(
       `${this.basePath}/payment_dispute/${paymentDisputeId}/upload_evidence_file`,
       body,
-      { 'Content-Type': 'multipart/form-data' }
+      { headers: { 'Content-Type': 'multipart/form-data' } }
     );
   }
 

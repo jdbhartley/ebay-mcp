@@ -1,12 +1,5 @@
-# TODO for src/api/order-management
+# Order Management API
 
-This file tracks the implementation status of the Order Management API.
+## Future Improvements
 
-## Implemented Endpoints
-
-All endpoints from the OpenAPI specifications have been implemented in `fulfillment.ts` and `dispute.ts`.
-
-## Improvements
-- Input Validation
-- Error Handling
-- Testing
+- **Testing:** Add unit tests for all endpoints.

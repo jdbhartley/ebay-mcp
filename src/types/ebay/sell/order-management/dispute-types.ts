@@ -163,3 +163,10 @@ export interface AddEvidencePaymentDisputeRequest {
 export interface AddEvidencePaymentDisputeResponse {
   evidenceId?: string;
 }
+
+export interface UpdateEvidencePaymentDisputeRequest {
+  evidenceId?: string;
+  evidenceType?: string;
+  files?: FileEvidence[];
+  lineItems?: OrderLineItems[];
+}

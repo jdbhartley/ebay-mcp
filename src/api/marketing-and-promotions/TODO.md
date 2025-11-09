@@ -7,11 +7,14 @@ This file outlines the tasks for completing the implementation of the Marketing 
 The following endpoints are defined in the OpenAPI specification but are not yet implemented in the server:
 
 ### Marketing
-- `POST /ad_campaign/{campaign_id}/bulk_create_ads_by_inventory_reference`
-- `POST /ad_campaign/{campaign_id}/bulk_create_ads_by_listing_id`
-- `POST /ad_campaign/{campaign_id}/bulk_delete_ads_by_inventory_reference`
-- `POST /ad_campaign/{campaign_id}/bulk_delete_ads_by_listing_id`
-- `POST /ad_campaign/{campaign_id}/bulk_update_ads_bid_by_inventory_reference`
+- `GET /ad_campaign` - **IMPLEMENTED**
+- `GET /ad_campaign/{campaign_id}` - **IMPLEMENTED**
+- `POST /ad_campaign` - **IMPLEMENTED**
+- `POST /ad_campaign/{campaign_id}/bulk_create_ads_by_inventory_reference` - **IMPLEMENTED**
+- `POST /ad_campaign/{campaign_id}/bulk_create_ads_by_listing_id` - **IMPLEMENTED**
+- `POST /ad_campaign/{campaign_id}/bulk_delete_ads_by_inventory_reference` - **IMPLEMENTED**
+- `POST /ad_campaign/{campaign_id}/bulk_delete_ads_by_listing_id` - **IMPLEMENTED**
+- `POST /ad_campaign/{campaign_id}/bulk_update_ads_bid_by_inventory_reference` - **IMPLEMENTED**
 - `POST /ad_campaign/{campaign_id}/bulk_update_ads_bid_by_listing_id`
 - `POST /ad_campaign/{campaign_id}/bulk_update_ads_status`
 - `POST /ad_campaign/{campaign_id}/bulk_update_ads_status_by_listing_id`
@@ -21,12 +24,12 @@ The following endpoints are defined in the OpenAPI specification but are not yet
 - `GET /ad_campaign/{campaign_id}/ad/{ad_id}` - **IMPLEMENTED**
 - `DELETE /ad_campaign/{campaign_id}/ad/{ad_id}` - **IMPLEMENTED**
 - `POST /ad_campaign/{campaign_id}/ad/{ad_id}/clone` - **IMPLEMENTED**
-- `GET /ad_campaign/get_ads_by_inventory_reference` - **IMPLEMENTED**
-- `GET /ad_campaign/get_ads_by_listing_id` - **IMPLEMENTED**
-- `POST /ad_campaign/{campaign_id}/update_bid` - **IMPLEMENTED**
-- `POST /ad_campaign/clone` - **IMPLEMENTED**
+- `GET /ad_campaign/{campaign_id}/get_ads_by_inventory_reference` - **IMPLEMENTED**
+- `GET /ad_campaign/{campaign_id}/get_ads_by_listing_id` - **IMPLEMENTED`
+- `POST /ad_campaign/{campaign_id}/ad/{ad_id}/update_bid` - **IMPLEMENTED**
+- `POST /ad_campaign/{campaign_id}/clone` - **IMPLEMENTED**
 - `POST /ad_campaign/{campaign_id}/end` - **IMPLEMENTED**
-- `GET /ad_campaign_by_name` - **IMPLEMENTED**
+- `GET /ad_campaign/get_campaign_by_name` - **IMPLEMENTED**
 - `POST /ad_campaign/{campaign_id}/pause`
 - `POST /ad_campaign/{campaign_id}/resume`
 - `PUT /ad_campaign/{campaign_id}/update_campaign_identification`
@@ -80,7 +83,9 @@ The following endpoints are defined in the OpenAPI specification but are not yet
 - `PUT /ad_group/{ad_group_id}/negative_keyword/{negative_keyword_id}`
 
 ### Recommendation
-- All endpoints are implemented.
+- `POST /find` - **IMPLEMENTED**
+
+All other endpoints are implemented.
 
 ## Improvements
 

@@ -306,3 +306,28 @@ export interface UpdateBidPercentageRequest {
    */
   bidPercentage?: string;
 }
+
+export interface BulkCreateAdsByInventoryReferenceRequest {
+  requests?: CreateAdsByInventoryReferenceRequest[];
+}
+
+export interface BulkCreateAdRequest {
+  requests?: CreateAdRequest[];
+}
+
+export interface DeleteAdRequest {
+  listingId?: string;
+}
+
+export interface BulkDeleteAdRequest {
+  requests?: DeleteAdRequest[];
+}
+
+export interface DeleteAdsByInventoryReferenceRequest {
+  inventoryReferenceId?: string;
+  inventoryReferenceType?: string;
+}
+
+export interface BulkDeleteAdsByInventoryReferenceRequest {
+  requests?: DeleteAdsByInventoryReferenceRequest[];
+}

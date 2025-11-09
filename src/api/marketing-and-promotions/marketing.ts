@@ -252,4 +252,69 @@ export class MarketingApi {
       params,
     );
   }
+
+  /**
+   * Bulk create ads by inventory reference
+   */
+  async bulkCreateAdsByInventoryReference(
+    campaignId: string,
+    body: BulkCreateAdsByInventoryReferenceRequest,
+  ): Promise<BulkCreateAdsByInventoryReferenceResponse> {
+    return this.client.post<BulkCreateAdsByInventoryReferenceResponse>(
+      `${this.basePath}/ad_campaign/${campaignId}/bulk_create_ads_by_inventory_reference`,
+      body,
+    );
+  }
+
+  /**
+   * Bulk create ads by listing id
+   */
+  async bulkCreateAdsByListingId(
+    campaignId: string,
+    body: BulkCreateAdRequest,
+  ): Promise<BulkAdResponse> {
+    return this.client.post<BulkAdResponse>(
+      `${this.basePath}/ad_campaign/${campaignId}/bulk_create_ads_by_listing_id`,
+      body,
+    );
+  }
+
+  /**
+   * Bulk delete ads by inventory reference
+   */
+  async bulkDeleteAdsByInventoryReference(
+    campaignId: string,
+    body: BulkDeleteAdsByInventoryReferenceRequest,
+  ): Promise<BulkDeleteAdsByInventoryReferenceResponse> {
+    return this.client.post<BulkDeleteAdsByInventoryReferenceResponse>(
+      `${this.basePath}/ad_campaign/${campaignId}/bulk_delete_ads_by_inventory_reference`,
+      body,
+    );
+  }
+
+  /**
+   * Bulk delete ads by listing id
+   */
+  async bulkDeleteAdsByListingId(
+    campaignId: string,
+    body: BulkDeleteAdRequest,
+  ): Promise<BulkDeleteAdResponse> {
+    return this.client.post<BulkDeleteAdResponse>(
+      `${this.basePath}/ad_campaign/${campaignId}/bulk_delete_ads_by_listing_id`,
+      body,
+    );
+  }
+
+  /**
+   * Bulk update ads bid by inventory reference
+   */
+  async bulkUpdateAdsBidByInventoryReference(
+    campaignId: string,
+    body: BulkCreateAdsByInventoryReferenceRequest,
+  ): Promise<BulkUpdateAdsByInventoryReferenceResponse> {
+    return this.client.post<BulkUpdateAdsByInventoryReferenceResponse>(
+      `${this.basePath}/ad_campaign/${campaignId}/bulk_update_ads_bid_by_inventory_reference`,
+      body,
+    );
+  }
 }

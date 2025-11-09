@@ -326,3 +326,64 @@ export interface Ads {
    */
   ads?: Ad[];
 }
+
+export interface CreateAdsByInventoryReferenceResponse {
+  ads?: AdReference[];
+  errors?: Error[];
+  inventoryReferenceId?: string;
+  inventoryReferenceType?: string;
+  statusCode?: number;
+}
+
+export interface BulkCreateAdsByInventoryReferenceResponse {
+  responses?: CreateAdsByInventoryReferenceResponse[];
+}
+
+export interface AdResponse {
+  adId?: string;
+  errors?: Error[];
+  href?: string;
+  listingId?: string;
+  statusCode?: number;
+}
+
+export interface BulkAdResponse {
+  responses?: AdResponse[];
+}
+
+export interface DeleteAdsByInventoryReferenceResponse {
+  adId?: string;
+  errors?: Error[];
+  inventoryReferenceId?: string;
+  inventoryReferenceType?: string;
+  listingId?: string;
+  statusCode?: number;
+}
+
+export interface BulkDeleteAdsByInventoryReferenceResponse {
+  responses?: DeleteAdsByInventoryReferenceResponse[];
+}
+
+export interface DeleteAdResponse {
+  adId?: string;
+  errors?: Error[];
+  listingId?: string;
+  statusCode?: number;
+}
+
+export interface BulkDeleteAdResponse {
+  responses?: DeleteAdResponse[];
+}
+
+export interface UpdateAdsByInventoryReferenceResponse {
+  adId?: string;
+  errors?: Error[];
+  inventoryReferenceId?: string;
+  inventoryReferenceType?: string;
+  listingId?: string;
+  statusCode?: number;
+}
+
+export interface BulkUpdateAdsByInventoryReferenceResponse {
+  responses?: UpdateAdsByInventoryReferenceResponse[];
+}

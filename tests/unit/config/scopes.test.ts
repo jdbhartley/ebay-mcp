@@ -58,15 +58,13 @@ describe("Scope Validation", () => {
       });
     });
 
-    it("should not include production-only scopes in sandbox", () => {
+    it("should include all production scopes in sandbox (sandbox is superset)", () => {
       const sandboxScopes = getDefaultScopes("sandbox");
+      const productionScopes = getDefaultScopes("production");
 
-      const productionOnlyScopes = [
-        "https://api.ebay.com/oauth/scope/sell.edelivery",
-      ];
-
-      productionOnlyScopes.forEach((scope) => {
-        expect(sandboxScopes).not.toContain(scope);
+      // All production scopes should exist in sandbox
+      productionScopes.forEach((scope) => {
+        expect(sandboxScopes).toContain(scope);
       });
     });
   });
@@ -110,17 +108,16 @@ describe("Scope Validation", () => {
       expect(result.validScopes).toEqual(sandboxOnlyScopes);
     });
 
-    it("should warn when requesting production-only scope in sandbox", () => {
-      const productionOnlyScopes = [
+    it("should not warn for production scopes in sandbox (all exist in both)", () => {
+      const productionScopes = [
         "https://api.ebay.com/oauth/scope/sell.edelivery",
       ];
 
-      const result = validateScopes(productionOnlyScopes, "sandbox");
+      const result = validateScopes(productionScopes, "sandbox");
 
-      expect(result.warnings.length).toBeGreaterThan(0);
-      expect(result.warnings[0]).toContain("production");
-      // Still includes the scopes (let eBay reject them)
-      expect(result.validScopes).toEqual(productionOnlyScopes);
+      // These scopes exist in both environments, so no warnings
+      expect(result.warnings.length).toBe(0);
+      expect(result.validScopes).toEqual(productionScopes);
     });
 
     it("should warn for unrecognized scopes", () => {
@@ -316,9 +313,10 @@ describe("Scope Validation", () => {
       expect(ruMatch).not.toBeNull();
       const decodedRu = decodeURIComponent(ruMatch![1]!);
 
-      // Scopes should be joined and encoded
-      const scopeParam = scopes.join(" ");
-      expect(decodedRu).toContain(encodeURIComponent(scopeParam));
+      // Scopes should be joined and present (URL encoding uses + for spaces)
+      scopes.forEach((scope) => {
+        expect(decodedRu).toContain(encodeURIComponent(scope));
+      });
     });
   });
 });

@@ -440,7 +440,7 @@ export const inventoryTools: ToolDefinition[] = [
     description: 'Create or replace product compatibility for an inventory item',
     inputSchema: {
       sku: z.string().describe('The seller-defined SKU'),
-      compatibility: z.record(z.unknown()).describe('Product compatibility details')
+      compatibility: productCompatibilitySchema.describe('Product compatibility details')
     }
   },
   {
@@ -463,7 +463,7 @@ export const inventoryTools: ToolDefinition[] = [
     description: 'Create or replace an inventory item group',
     inputSchema: {
       inventoryItemGroupKey: z.string().describe('The inventory item group key'),
-      inventoryItemGroup: z.record(z.unknown()).describe('Inventory item group details')
+      inventoryItemGroup: inventoryItemGroupSchema.describe('Inventory item group details')
     }
   },
   {
@@ -494,7 +494,7 @@ export const inventoryTools: ToolDefinition[] = [
     description: 'Create or replace an inventory location',
     inputSchema: {
       merchantLocationKey: z.string().describe('The merchant location key'),
-      location: z.record(z.unknown()).describe('Location details')
+      location: locationSchema.describe('Location details')
     }
   },
   {
@@ -523,7 +523,7 @@ export const inventoryTools: ToolDefinition[] = [
     description: 'Update location details for an inventory location',
     inputSchema: {
       merchantLocationKey: z.string().describe('The merchant location key'),
-      locationDetails: z.record(z.unknown()).describe('Location detail updates')
+      locationDetails: locationSchema.describe('Location detail updates')
     }
   },
   // Offer Management
@@ -539,7 +539,7 @@ export const inventoryTools: ToolDefinition[] = [
     description: 'Update an existing offer',
     inputSchema: {
       offerId: z.string().describe('The offer ID'),
-      offer: z.record(z.unknown()).describe('Updated offer details')
+      offer: offerSchema.describe('Updated offer details')
     }
   },
   {
@@ -560,21 +560,21 @@ export const inventoryTools: ToolDefinition[] = [
     name: 'ebay_bulk_create_offer',
     description: 'Bulk create multiple offers',
     inputSchema: {
-      requests: z.record(z.unknown()).describe('Bulk offer creation requests')
+      requests: bulkOfferRequestSchema.describe('Bulk offer creation requests')
     }
   },
   {
     name: 'ebay_bulk_publish_offer',
     description: 'Bulk publish multiple offers',
     inputSchema: {
-      requests: z.record(z.unknown()).describe('Bulk offer publish requests')
+      requests: bulkPublishRequestSchema.describe('Bulk offer publish requests')
     }
   },
   {
     name: 'ebay_get_listing_fees',
     description: 'Get listing fees for offers before publishing',
     inputSchema: {
-      offers: z.record(z.unknown()).describe('Offers to calculate listing fees for')
+      offers: listingFeesRequestSchema.describe('Offers to calculate listing fees for')
     }
   },
   // Listing Migration
@@ -582,7 +582,7 @@ export const inventoryTools: ToolDefinition[] = [
     name: 'ebay_bulk_migrate_listing',
     description: 'Bulk migrate listings to the inventory model',
     inputSchema: {
-      requests: z.record(z.unknown()).describe('Bulk listing migration requests')
+      requests: bulkMigrateRequestSchema.describe('Bulk listing migration requests')
     }
   }
 ];
@@ -609,7 +609,7 @@ export const fulfillmentTools: ToolDefinition[] = [
     description: 'Create a shipping fulfillment for an order.\n\nRequired OAuth Scope: sell.fulfillment\nMinimum Scope: https://api.ebay.com/oauth/api_scope/sell.fulfillment',
     inputSchema: {
       orderId: z.string().describe('The order ID'),
-      fulfillment: z.record(z.unknown()).describe('Shipping fulfillment details including tracking number')
+      fulfillment: shippingFulfillmentSchema.describe('Shipping fulfillment details including tracking number')
     }
   },
   {
@@ -891,14 +891,14 @@ export const metadataTools: ToolDefinition[] = [
     name: 'ebay_get_compatibilities_by_specification',
     description: 'Get compatibilities by specification',
     inputSchema: {
-      specification: z.record(z.unknown()).describe('Compatibility specification object')
+      specification: compatibilitySpecificationSchema.describe('Compatibility specification object')
     }
   },
   {
     name: 'ebay_get_compatibility_property_names',
     description: 'Get compatibility property names',
     inputSchema: {
-      data: z.record(z.unknown()).describe('Request data for getting compatibility property names')
+      data: compatibilityDataSchema.describe('Request data for getting compatibility property names')
     }
   },
   {

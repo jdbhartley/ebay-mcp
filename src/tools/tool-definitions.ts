@@ -326,7 +326,7 @@ export const accountTools: ToolDefinition[] = [
 export const inventoryTools: ToolDefinition[] = [
   {
     name: 'ebay_get_inventory_items',
-    description: 'Retrieve all inventory items for the seller',
+    description: 'Retrieve all inventory items for the seller.\n\nRequired OAuth Scope: sell.inventory.readonly or sell.inventory\nMinimum Scope: https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
     inputSchema: {
       limit: z.number().optional().describe('Number of items to return (max 100)'),
       offset: z.number().optional().describe('Number of items to skip')
@@ -334,14 +334,14 @@ export const inventoryTools: ToolDefinition[] = [
   },
   {
     name: 'ebay_get_inventory_item',
-    description: 'Get a specific inventory item by SKU',
+    description: 'Get a specific inventory item by SKU.\n\nRequired OAuth Scope: sell.inventory.readonly or sell.inventory\nMinimum Scope: https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
     inputSchema: {
       sku: z.string().describe('The seller-defined SKU')
     }
   },
   {
     name: 'ebay_create_inventory_item',
-    description: 'Create or replace an inventory item',
+    description: 'Create or replace an inventory item.\n\nRequired OAuth Scope: sell.inventory\nMinimum Scope: https://api.ebay.com/oauth/api_scope/sell.inventory',
     inputSchema: {
       sku: z.string().describe('The seller-defined SKU'),
       inventoryItem: z.record(z.unknown()).describe('Inventory item details')
@@ -555,7 +555,7 @@ export const inventoryTools: ToolDefinition[] = [
 export const fulfillmentTools: ToolDefinition[] = [
   {
     name: 'ebay_get_orders',
-    description: 'Retrieve orders for the seller',
+    description: 'Retrieve orders for the seller.\n\nRequired OAuth Scope: sell.fulfillment.readonly or sell.fulfillment\nMinimum Scope: https://api.ebay.com/oauth/api_scope/sell.fulfillment.readonly',
     inputSchema: {
       filter: z.string().optional().describe('Filter criteria (e.g., orderfulfillmentstatus:{NOT_STARTED})'),
       limit: z.number().optional().describe('Number of orders to return'),
@@ -564,14 +564,14 @@ export const fulfillmentTools: ToolDefinition[] = [
   },
   {
     name: 'ebay_get_order',
-    description: 'Get details of a specific order',
+    description: 'Get details of a specific order.\n\nRequired OAuth Scope: sell.fulfillment.readonly or sell.fulfillment\nMinimum Scope: https://api.ebay.com/oauth/api_scope/sell.fulfillment.readonly',
     inputSchema: {
       orderId: z.string().describe('The unique order ID')
     }
   },
   {
     name: 'ebay_create_shipping_fulfillment',
-    description: 'Create a shipping fulfillment for an order',
+    description: 'Create a shipping fulfillment for an order.\n\nRequired OAuth Scope: sell.fulfillment\nMinimum Scope: https://api.ebay.com/oauth/api_scope/sell.fulfillment',
     inputSchema: {
       orderId: z.string().describe('The order ID'),
       fulfillment: z.record(z.unknown()).describe('Shipping fulfillment details including tracking number')
@@ -579,7 +579,7 @@ export const fulfillmentTools: ToolDefinition[] = [
   },
   {
     name: 'ebay_issue_refund',
-    description: 'Issue a full or partial refund for an eBay order. Use this to refund buyers for orders, including specifying the refund amount and reason.',
+    description: 'Issue a full or partial refund for an eBay order. Use this to refund buyers for orders, including specifying the refund amount and reason.\n\nRequired OAuth Scope: sell.fulfillment\nMinimum Scope: https://api.ebay.com/oauth/api_scope/sell.fulfillment',
     inputSchema: {
       orderId: z.string().describe('The unique eBay order ID to refund'),
       refundData: z.object({

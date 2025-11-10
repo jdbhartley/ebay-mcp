@@ -192,8 +192,8 @@ The following is a list of Zod schemas that need to be created. The list is base
 - [ ] `recommendation.ts`
 
 ### Order Management
-- [ ] `dispute.ts`
-- [ ] `fulfillment.ts`
+- [x] `dispute.ts`
+- [x] `fulfillment.ts`
 
 ### Other
 - [x] `compliance.ts`

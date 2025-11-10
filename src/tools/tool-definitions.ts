@@ -1,11 +1,9 @@
+import { z } from 'zod';
+
 export type ToolDefinition = {
   name: string;
   description: string;
-  inputSchema: {
-    type: string;
-    properties?: Record<string, unknown>;
-    required?: string[];
-  };
+  inputSchema: Record<string, z.ZodTypeAny>;
 };
 
 export const chatGptTools: ToolDefinition[] = [
@@ -13,99 +11,48 @@ export const chatGptTools: ToolDefinition[] = [
     name: 'search',
     description: 'Search for eBay inventory items',
     inputSchema: {
-      type: 'object',
-      properties: {
-        query: {
-          type: 'string',
-          description: 'Search query'
-        },
-        limit: {
-          type: 'number',
-          description: 'Maximum number of results'
-        }
-      }
+      query: z.string().describe('Search query'),
+      limit: z.number().optional().describe('Maximum number of results')
     }
   },
   {
     name: 'fetch',
     description: 'Fetch a specific eBay inventory item by SKU',
     inputSchema: {
-      type: 'object',
-      properties: {
-        id: {
-          type: 'string',
-          description: 'Item SKU'
-        }
-      },
-      required: ['id']
+      id: z.string().describe('Item SKU')
     }
   },
   {
     name: 'ebay_get_oauth_url',
     description: 'Generate the eBay OAuth authorization URL for user consent. The user should open this URL in a browser to grant permissions to the application. This supports the OAuth 2.0 Authorization Code grant flow. The redirect URI can be provided as a parameter or will be read from EBAY_REDIRECT_URI environment variable.',
     inputSchema: {
-      type: 'object',
-      properties: {
-        redirectUri: {
-          type: 'string',
-          description: 'Optional redirect URI registered with your eBay application (RuName). If not provided, will use EBAY_REDIRECT_URI from .env file.'
-        },
-        scopes: {
-          type: 'array',
-          description: 'Optional array of OAuth scopes. If not provided, uses default scopes for all Sell APIs',
-          items: {
-            type: 'string'
-          }
-        },
-        state: {
-          type: 'string',
-          description: 'Optional state parameter for CSRF protection'
-        }
-      },
-      required: []
+      redirectUri: z.string().optional().describe('Optional redirect URI registered with your eBay application (RuName). If not provided, will use EBAY_REDIRECT_URI from .env file.'),
+      scopes: z.array(z.string()).optional().describe('Optional array of OAuth scopes. If not provided, uses default scopes for all Sell APIs'),
+      state: z.string().optional().describe('Optional state parameter for CSRF protection')
     }
   },
   {
     name: 'ebay_set_user_tokens',
     description: 'Set the user access token and refresh token for authenticated API requests. These tokens should be obtained through the OAuth authorization code flow. Tokens will be persisted to disk and automatically refreshed when needed. User tokens provide higher rate limits (10,000-50,000 requests/day) compared to client credentials (1,000 requests/day).',
     inputSchema: {
-      type: 'object',
-      properties: {
-        accessToken: {
-          type: 'string',
-          description: 'The user access token obtained from OAuth flow'
-        },
-        refreshToken: {
-          type: 'string',
-          description: 'The refresh token obtained from OAuth flow'
-        }
-      },
-      required: ['accessToken', 'refreshToken']
+      accessToken: z.string().describe('The user access token obtained from OAuth flow'),
+      refreshToken: z.string().describe('The refresh token obtained from OAuth flow')
     }
   },
   {
     name: 'ebay_get_token_status',
     description: 'Check the current OAuth token status. Returns information about whether user tokens or client credentials are being used, and whether tokens are valid.',
-    inputSchema: {
-      type: 'object',
-      properties: {}
-    }
+    inputSchema: {}
   },
   {
     name: 'ebay_clear_tokens',
     description: 'Clear all stored OAuth tokens (both user tokens and client credentials). This will require re-authentication for subsequent API calls.',
-    inputSchema: {
-      type: 'object',
-      properties: {}
-    }
+    inputSchema: {}
   },
   {
     name: 'create_token_template_file',
     description: 'Creates a template .ebay-mcp-tokens.json file in the project root.',
-    inputSchema: {
-      type: 'object',
-      properties: {}
-    }
+    inputSchema: {}
   }
 ];
 
@@ -114,52 +61,28 @@ export const accountTools: ToolDefinition[] = [
     name: 'ebay_get_custom_policies',
     description: 'Retrieve custom policies defined for the seller account',
     inputSchema: {
-      type: 'object',
-      properties: {
-        policyTypes: {
-          type: 'string',
-          description: 'Comma-delimited list of policy types to retrieve'
-        }
-      }
+      policyTypes: z.string().optional().describe('Comma-delimited list of policy types to retrieve')
     }
   },
   {
     name: 'ebay_get_fulfillment_policies',
     description: 'Get fulfillment policies for the seller',
     inputSchema: {
-      type: 'object',
-      properties: {
-        marketplaceId: {
-          type: 'string',
-          description: 'eBay marketplace ID (e.g., EBAY_US)'
-        }
-      }
+      marketplaceId: z.string().optional().describe('eBay marketplace ID (e.g., EBAY_US)')
     }
   },
   {
     name: 'ebay_get_payment_policies',
     description: 'Get payment policies for the seller',
     inputSchema: {
-      type: 'object',
-      properties: {
-        marketplaceId: {
-          type: 'string',
-          description: 'eBay marketplace ID (e.g., EBAY_US)'
-        }
-      }
+      marketplaceId: z.string().optional().describe('eBay marketplace ID (e.g., EBAY_US)')
     }
   },
   {
     name: 'ebay_get_return_policies',
     description: 'Get return policies for the seller',
     inputSchema: {
-      type: 'object',
-      properties: {
-        marketplaceId: {
-          type: 'string',
-          description: 'eBay marketplace ID (e.g., EBAY_US)'
-        }
-      }
+      marketplaceId: z.string().optional().describe('eBay marketplace ID (e.g., EBAY_US)')
     }
   },
   // Fulfillment Policy CRUD
@@ -167,78 +90,37 @@ export const accountTools: ToolDefinition[] = [
     name: 'ebay_create_fulfillment_policy',
     description: 'Create a new fulfillment policy',
     inputSchema: {
-      type: 'object',
-      properties: {
-        policy: {
-          type: 'object',
-          description: 'Fulfillment policy details'
-        }
-      },
-      required: ['policy']
+      policy: z.record(z.unknown()).describe('Fulfillment policy details')
     }
   },
   {
     name: 'ebay_get_fulfillment_policy',
     description: 'Get a specific fulfillment policy by ID',
     inputSchema: {
-      type: 'object',
-      properties: {
-        fulfillmentPolicyId: {
-          type: 'string',
-          description: 'The fulfillment policy ID'
-        }
-      },
-      required: ['fulfillmentPolicyId']
+      fulfillmentPolicyId: z.string().describe('The fulfillment policy ID')
     }
   },
   {
     name: 'ebay_get_fulfillment_policy_by_name',
     description: 'Get a fulfillment policy by name',
     inputSchema: {
-      type: 'object',
-      properties: {
-        marketplaceId: {
-          type: 'string',
-          description: 'eBay marketplace ID (e.g., EBAY_US)'
-        },
-        name: {
-          type: 'string',
-          description: 'Policy name'
-        }
-      },
-      required: ['marketplaceId', 'name']
+      marketplaceId: z.string().describe('eBay marketplace ID (e.g., EBAY_US)'),
+      name: z.string().describe('Policy name')
     }
   },
   {
     name: 'ebay_update_fulfillment_policy',
     description: 'Update an existing fulfillment policy',
     inputSchema: {
-      type: 'object',
-      properties: {
-        fulfillmentPolicyId: {
-          type: 'string',
-          description: 'The fulfillment policy ID'
-        },
-        policy: {
-          type: 'object',
-          description: 'Updated fulfillment policy details'
-        }
-      },
-      required: ['fulfillmentPolicyId', 'policy']
+      fulfillmentPolicyId: z.string().describe('The fulfillment policy ID'),
+      policy: z.record(z.unknown()).describe('Updated fulfillment policy details')
     }
   },
   {
     name: 'ebay_delete_fulfillment_policy',
     description: 'Delete a fulfillment policy',
     inputSchema: {
-      type: 'object',
-      properties: {
-        fulfillmentPolicyId: {
-          type: 'string',
-          description: 'The fulfillment policy ID'
-        }
-      },
-      required: ['fulfillmentPolicyId']
+      fulfillmentPolicyId: z.string().describe('The fulfillment policy ID')
     }
   },
   // Payment Policy CRUD
@@ -246,78 +128,37 @@ export const accountTools: ToolDefinition[] = [
     name: 'ebay_create_payment_policy',
     description: 'Create a new payment policy',
     inputSchema: {
-      type: 'object',
-      properties: {
-        policy: {
-          type: 'object',
-          description: 'Payment policy details'
-        }
-      },
-      required: ['policy']
+      policy: z.record(z.unknown()).describe('Payment policy details')
     }
   },
   {
     name: 'ebay_get_payment_policy',
     description: 'Get a specific payment policy by ID',
     inputSchema: {
-      type: 'object',
-      properties: {
-        paymentPolicyId: {
-          type: 'string',
-          description: 'The payment policy ID'
-        }
-      },
-      required: ['paymentPolicyId']
+      paymentPolicyId: z.string().describe('The payment policy ID')
     }
   },
   {
     name: 'ebay_get_payment_policy_by_name',
     description: 'Get a payment policy by name',
     inputSchema: {
-      type: 'object',
-      properties: {
-        marketplaceId: {
-          type: 'string',
-          description: 'eBay marketplace ID (e.g., EBAY_US)'
-        },
-        name: {
-          type: 'string',
-          description: 'Policy name'
-        }
-      },
-      required: ['marketplaceId', 'name']
+      marketplaceId: z.string().describe('eBay marketplace ID (e.g., EBAY_US)'),
+      name: z.string().describe('Policy name')
     }
   },
   {
     name: 'ebay_update_payment_policy',
     description: 'Update an existing payment policy',
     inputSchema: {
-      type: 'object',
-      properties: {
-        paymentPolicyId: {
-          type: 'string',
-          description: 'The payment policy ID'
-        },
-        policy: {
-          type: 'object',
-          description: 'Updated payment policy details'
-        }
-      },
-      required: ['paymentPolicyId', 'policy']
+      paymentPolicyId: z.string().describe('The payment policy ID'),
+      policy: z.record(z.unknown()).describe('Updated payment policy details')
     }
   },
   {
     name: 'ebay_delete_payment_policy',
     description: 'Delete a payment policy',
     inputSchema: {
-      type: 'object',
-      properties: {
-        paymentPolicyId: {
-          type: 'string',
-          description: 'The payment policy ID'
-        }
-      },
-      required: ['paymentPolicyId']
+      paymentPolicyId: z.string().describe('The payment policy ID')
     }
   },
   // Return Policy CRUD
@@ -325,78 +166,37 @@ export const accountTools: ToolDefinition[] = [
     name: 'ebay_create_return_policy',
     description: 'Create a new return policy',
     inputSchema: {
-      type: 'object',
-      properties: {
-        policy: {
-          type: 'object',
-          description: 'Return policy details'
-        }
-      },
-      required: ['policy']
+      policy: z.record(z.unknown()).describe('Return policy details')
     }
   },
   {
     name: 'ebay_get_return_policy',
     description: 'Get a specific return policy by ID',
     inputSchema: {
-      type: 'object',
-      properties: {
-        returnPolicyId: {
-          type: 'string',
-          description: 'The return policy ID'
-        }
-      },
-      required: ['returnPolicyId']
+      returnPolicyId: z.string().describe('The return policy ID')
     }
   },
   {
     name: 'ebay_get_return_policy_by_name',
     description: 'Get a return policy by name',
     inputSchema: {
-      type: 'object',
-      properties: {
-        marketplaceId: {
-          type: 'string',
-          description: 'eBay marketplace ID (e.g., EBAY_US)'
-        },
-        name: {
-          type: 'string',
-          description: 'Policy name'
-        }
-      },
-      required: ['marketplaceId', 'name']
+      marketplaceId: z.string().describe('eBay marketplace ID (e.g., EBAY_US)'),
+      name: z.string().describe('Policy name')
     }
   },
   {
     name: 'ebay_update_return_policy',
     description: 'Update an existing return policy',
     inputSchema: {
-      type: 'object',
-      properties: {
-        returnPolicyId: {
-          type: 'string',
-          description: 'The return policy ID'
-        },
-        policy: {
-          type: 'object',
-          description: 'Updated return policy details'
-        }
-      },
-      required: ['returnPolicyId', 'policy']
+      returnPolicyId: z.string().describe('The return policy ID'),
+      policy: z.record(z.unknown()).describe('Updated return policy details')
     }
   },
   {
     name: 'ebay_delete_return_policy',
     description: 'Delete a return policy',
     inputSchema: {
-      type: 'object',
-      properties: {
-        returnPolicyId: {
-          type: 'string',
-          description: 'The return policy ID'
-        }
-      },
-      required: ['returnPolicyId']
+      returnPolicyId: z.string().describe('The return policy ID')
     }
   },
   // Custom Policy CRUD
@@ -404,248 +204,122 @@ export const accountTools: ToolDefinition[] = [
     name: 'ebay_create_custom_policy',
     description: 'Create a new custom policy',
     inputSchema: {
-      type: 'object',
-      properties: {
-        policy: {
-          type: 'object',
-          description: 'Custom policy details'
-        }
-      },
-      required: ['policy']
+      policy: z.record(z.unknown()).describe('Custom policy details')
     }
   },
   {
     name: 'ebay_get_custom_policy',
     description: 'Get a specific custom policy by ID',
     inputSchema: {
-      type: 'object',
-      properties: {
-        customPolicyId: {
-          type: 'string',
-          description: 'The custom policy ID'
-        }
-      },
-      required: ['customPolicyId']
+      customPolicyId: z.string().describe('The custom policy ID')
     }
   },
   {
     name: 'ebay_update_custom_policy',
     description: 'Update an existing custom policy',
     inputSchema: {
-      type: 'object',
-      properties: {
-        customPolicyId: {
-          type: 'string',
-          description: 'The custom policy ID'
-        },
-        policy: {
-          type: 'object',
-          description: 'Updated custom policy details'
-        }
-      },
-      required: ['customPolicyId', 'policy']
+      customPolicyId: z.string().describe('The custom policy ID'),
+      policy: z.record(z.unknown()).describe('Updated custom policy details')
     }
   },
   {
     name: 'ebay_delete_custom_policy',
     description: 'Delete a custom policy',
     inputSchema: {
-      type: 'object',
-      properties: {
-        customPolicyId: {
-          type: 'string',
-          description: 'The custom policy ID'
-        }
-      },
-      required: ['customPolicyId']
+      customPolicyId: z.string().describe('The custom policy ID')
     }
   },
   // KYC, Payments, Programs, Sales Tax, Subscription
   {
     name: 'ebay_get_kyc',
     description: 'Get seller KYC (Know Your Customer) status',
-    inputSchema: {
-      type: 'object',
-      properties: {}
-    }
+    inputSchema: {}
   },
   {
     name: 'ebay_opt_in_to_payments_program',
     description: 'Opt-in to a payments program',
     inputSchema: {
-      type: 'object',
-      properties: {
-        marketplaceId: {
-          type: 'string',
-          description: 'eBay marketplace ID (e.g., EBAY_US)'
-        },
-        paymentsProgramType: {
-          type: 'string',
-          description: 'Payments program type'
-        }
-      },
-      required: ['marketplaceId', 'paymentsProgramType']
+      marketplaceId: z.string().describe('eBay marketplace ID (e.g., EBAY_US)'),
+      paymentsProgramType: z.string().describe('Payments program type')
     }
   },
   {
     name: 'ebay_get_payments_program_status',
     description: 'Get payments program status',
     inputSchema: {
-      type: 'object',
-      properties: {
-        marketplaceId: {
-          type: 'string',
-          description: 'eBay marketplace ID (e.g., EBAY_US)'
-        },
-        paymentsProgramType: {
-          type: 'string',
-          description: 'Payments program type'
-        }
-      },
-      required: ['marketplaceId', 'paymentsProgramType']
+      marketplaceId: z.string().describe('eBay marketplace ID (e.g., EBAY_US)'),
+      paymentsProgramType: z.string().describe('Payments program type')
     }
   },
   {
     name: 'ebay_get_rate_tables',
     description: 'Get seller rate tables',
-    inputSchema: {
-      type: 'object',
-      properties: {}
-    }
+    inputSchema: {}
   },
   {
     name: 'ebay_create_or_replace_sales_tax',
     description: 'Create or replace sales tax table for a jurisdiction',
     inputSchema: {
-      type: 'object',
-      properties: {
-        countryCode: {
-          type: 'string',
-          description: 'Two-letter ISO 3166 country code'
-        },
-        jurisdictionId: {
-          type: 'string',
-          description: 'Tax jurisdiction ID'
-        },
-        salesTaxBase: {
-          type: 'object',
-          description: 'Sales tax details'
-        }
-      },
-      required: ['countryCode', 'jurisdictionId', 'salesTaxBase']
+      countryCode: z.string().describe('Two-letter ISO 3166 country code'),
+      jurisdictionId: z.string().describe('Tax jurisdiction ID'),
+      salesTaxBase: z.record(z.unknown()).describe('Sales tax details')
     }
   },
   {
     name: 'ebay_bulk_create_or_replace_sales_tax',
     description: 'Bulk create or replace sales tax tables',
     inputSchema: {
-      type: 'object',
-      properties: {
-        requests: {
-          type: 'array',
-          description: 'Array of sales tax requests'
-        }
-      },
-      required: ['requests']
+      requests: z.array(z.unknown()).describe('Array of sales tax requests')
     }
   },
   {
     name: 'ebay_delete_sales_tax',
     description: 'Delete sales tax table for a jurisdiction',
     inputSchema: {
-      type: 'object',
-      properties: {
-        countryCode: {
-          type: 'string',
-          description: 'Two-letter ISO 3166 country code'
-        },
-        jurisdictionId: {
-          type: 'string',
-          description: 'Tax jurisdiction ID'
-        }
-      },
-      required: ['countryCode', 'jurisdictionId']
+      countryCode: z.string().describe('Two-letter ISO 3166 country code'),
+      jurisdictionId: z.string().describe('Tax jurisdiction ID')
     }
   },
   {
     name: 'ebay_get_sales_tax',
     description: 'Get sales tax table for a jurisdiction',
     inputSchema: {
-      type: 'object',
-      properties: {
-        countryCode: {
-          type: 'string',
-          description: 'Two-letter ISO 3166 country code'
-        },
-        jurisdictionId: {
-          type: 'string',
-          description: 'Tax jurisdiction ID'
-        }
-      },
-      required: ['countryCode', 'jurisdictionId']
+      countryCode: z.string().describe('Two-letter ISO 3166 country code'),
+      jurisdictionId: z.string().describe('Tax jurisdiction ID')
     }
   },
   {
     name: 'ebay_get_sales_taxes',
     description: 'Get all sales tax tables',
     inputSchema: {
-      type: 'object',
-      properties: {
-        countryCode: {
-          type: 'string',
-          description: 'Optional country code to filter by'
-        }
-      }
+      countryCode: z.string().optional().describe('Optional country code to filter by')
     }
   },
   {
     name: 'ebay_get_subscription',
     description: 'Get seller subscription information',
     inputSchema: {
-      type: 'object',
-      properties: {
-        limitType: {
-          type: 'string',
-          description: 'Optional limit type filter'
-        }
-      }
+      limitType: z.string().optional().describe('Optional limit type filter')
     }
   },
   {
     name: 'ebay_opt_in_to_program',
     description: 'Opt-in to a seller program',
     inputSchema: {
-      type: 'object',
-      properties: {
-        request: {
-          type: 'object',
-          description: 'Program opt-in request'
-        }
-      },
-      required: ['request']
+      request: z.record(z.unknown()).describe('Program opt-in request')
     }
   },
   {
     name: 'ebay_opt_out_of_program',
     description: 'Opt-out of a seller program',
     inputSchema: {
-      type: 'object',
-      properties: {
-        request: {
-          type: 'object',
-          description: 'Program opt-out request'
-        }
-      },
-      required: ['request']
+      request: z.record(z.unknown()).describe('Program opt-out request')
     }
   },
   {
     name: 'ebay_get_opted_in_programs',
     description: 'Get seller programs the account is opted into',
-    inputSchema: {
-      type: 'object',
-      properties: {}
-    }
+    inputSchema: {}
   }
 ];
 
@@ -654,98 +328,46 @@ export const inventoryTools: ToolDefinition[] = [
     name: 'ebay_get_inventory_items',
     description: 'Retrieve all inventory items for the seller',
     inputSchema: {
-      type: 'object',
-      properties: {
-        limit: {
-          type: 'number',
-          description: 'Number of items to return (max 100)'
-        },
-        offset: {
-          type: 'number',
-          description: 'Number of items to skip'
-        }
-      }
+      limit: z.number().optional().describe('Number of items to return (max 100)'),
+      offset: z.number().optional().describe('Number of items to skip')
     }
   },
   {
     name: 'ebay_get_inventory_item',
     description: 'Get a specific inventory item by SKU',
     inputSchema: {
-      type: 'object',
-      properties: {
-        sku: {
-          type: 'string',
-          description: 'The seller-defined SKU'
-        }
-      },
-      required: ['sku']
+      sku: z.string().describe('The seller-defined SKU')
     }
   },
   {
     name: 'ebay_create_inventory_item',
     description: 'Create or replace an inventory item',
     inputSchema: {
-      type: 'object',
-      properties: {
-        sku: {
-          type: 'string',
-          description: 'The seller-defined SKU'
-        },
-        inventoryItem: {
-          type: 'object',
-          description: 'Inventory item details'
-        }
-      },
-      required: ['sku', 'inventoryItem']
+      sku: z.string().describe('The seller-defined SKU'),
+      inventoryItem: z.record(z.unknown()).describe('Inventory item details')
     }
   },
   {
     name: 'ebay_get_offers',
     description: 'Get all offers for the seller',
     inputSchema: {
-      type: 'object',
-      properties: {
-        sku: {
-          type: 'string',
-          description: 'Filter by SKU'
-        },
-        marketplaceId: {
-          type: 'string',
-          description: 'Filter by marketplace ID'
-        },
-        limit: {
-          type: 'number',
-          description: 'Number of offers to return'
-        }
-      }
+      sku: z.string().optional().describe('Filter by SKU'),
+      marketplaceId: z.string().optional().describe('Filter by marketplace ID'),
+      limit: z.number().optional().describe('Number of offers to return')
     }
   },
   {
     name: 'ebay_create_offer',
     description: 'Create a new offer for an inventory item',
     inputSchema: {
-      type: 'object',
-      properties: {
-        offer: {
-          type: 'object',
-          description: 'Offer details including SKU, marketplace, pricing, and policies'
-        }
-      },
-      required: ['offer']
+      offer: z.record(z.unknown()).describe('Offer details including SKU, marketplace, pricing, and policies')
     }
   },
   {
     name: 'ebay_publish_offer',
     description: 'Publish an offer to create a listing',
     inputSchema: {
-      type: 'object',
-      properties: {
-        offerId: {
-          type: 'string',
-          description: 'The offer ID to publish'
-        }
-      },
-      required: ['offerId']
+      offerId: z.string().describe('The offer ID to publish')
     }
   },
   // Bulk Operations
@@ -753,42 +375,21 @@ export const inventoryTools: ToolDefinition[] = [
     name: 'ebay_bulk_create_or_replace_inventory_item',
     description: 'Bulk create or replace multiple inventory items',
     inputSchema: {
-      type: 'object',
-      properties: {
-        requests: {
-          type: 'object',
-          description: 'Bulk inventory item requests'
-        }
-      },
-      required: ['requests']
+      requests: z.record(z.unknown()).describe('Bulk inventory item requests')
     }
   },
   {
     name: 'ebay_bulk_get_inventory_item',
     description: 'Bulk get multiple inventory items',
     inputSchema: {
-      type: 'object',
-      properties: {
-        requests: {
-          type: 'object',
-          description: 'Bulk inventory item get requests with SKU list'
-        }
-      },
-      required: ['requests']
+      requests: z.record(z.unknown()).describe('Bulk inventory item get requests with SKU list')
     }
   },
   {
     name: 'ebay_bulk_update_price_quantity',
     description: 'Bulk update price and quantity for multiple offers',
     inputSchema: {
-      type: 'object',
-      properties: {
-        requests: {
-          type: 'object',
-          description: 'Bulk price and quantity update requests'
-        }
-      },
-      required: ['requests']
+      requests: z.record(z.unknown()).describe('Bulk price and quantity update requests')
     }
   },
   // Product Compatibility
@@ -796,46 +397,22 @@ export const inventoryTools: ToolDefinition[] = [
     name: 'ebay_get_product_compatibility',
     description: 'Get product compatibility information for an inventory item',
     inputSchema: {
-      type: 'object',
-      properties: {
-        sku: {
-          type: 'string',
-          description: 'The seller-defined SKU'
-        }
-      },
-      required: ['sku']
+      sku: z.string().describe('The seller-defined SKU')
     }
   },
   {
     name: 'ebay_create_or_replace_product_compatibility',
     description: 'Create or replace product compatibility for an inventory item',
     inputSchema: {
-      type: 'object',
-      properties: {
-        sku: {
-          type: 'string',
-          description: 'The seller-defined SKU'
-        },
-        compatibility: {
-          type: 'object',
-          description: 'Product compatibility details'
-        }
-      },
-      required: ['sku', 'compatibility']
+      sku: z.string().describe('The seller-defined SKU'),
+      compatibility: z.record(z.unknown()).describe('Product compatibility details')
     }
   },
   {
     name: 'ebay_delete_product_compatibility',
     description: 'Delete product compatibility for an inventory item',
     inputSchema: {
-      type: 'object',
-      properties: {
-        sku: {
-          type: 'string',
-          description: 'The seller-defined SKU'
-        }
-      },
-      required: ['sku']
+      sku: z.string().describe('The seller-defined SKU')
     }
   },
   // Inventory Item Groups
@@ -843,46 +420,22 @@ export const inventoryTools: ToolDefinition[] = [
     name: 'ebay_get_inventory_item_group',
     description: 'Get an inventory item group (variation group)',
     inputSchema: {
-      type: 'object',
-      properties: {
-        inventoryItemGroupKey: {
-          type: 'string',
-          description: 'The inventory item group key'
-        }
-      },
-      required: ['inventoryItemGroupKey']
+      inventoryItemGroupKey: z.string().describe('The inventory item group key')
     }
   },
   {
     name: 'ebay_create_or_replace_inventory_item_group',
     description: 'Create or replace an inventory item group',
     inputSchema: {
-      type: 'object',
-      properties: {
-        inventoryItemGroupKey: {
-          type: 'string',
-          description: 'The inventory item group key'
-        },
-        inventoryItemGroup: {
-          type: 'object',
-          description: 'Inventory item group details'
-        }
-      },
-      required: ['inventoryItemGroupKey', 'inventoryItemGroup']
+      inventoryItemGroupKey: z.string().describe('The inventory item group key'),
+      inventoryItemGroup: z.record(z.unknown()).describe('Inventory item group details')
     }
   },
   {
     name: 'ebay_delete_inventory_item_group',
     description: 'Delete an inventory item group',
     inputSchema: {
-      type: 'object',
-      properties: {
-        inventoryItemGroupKey: {
-          type: 'string',
-          description: 'The inventory item group key'
-        }
-      },
-      required: ['inventoryItemGroupKey']
+      inventoryItemGroupKey: z.string().describe('The inventory item group key')
     }
   },
   // Location Management
@@ -890,109 +443,52 @@ export const inventoryTools: ToolDefinition[] = [
     name: 'ebay_get_inventory_locations',
     description: 'Get all inventory locations',
     inputSchema: {
-      type: 'object',
-      properties: {
-        limit: {
-          type: 'number',
-          description: 'Number of locations to return'
-        },
-        offset: {
-          type: 'number',
-          description: 'Number of locations to skip'
-        }
-      }
+      limit: z.number().optional().describe('Number of locations to return'),
+      offset: z.number().optional().describe('Number of locations to skip')
     }
   },
   {
     name: 'ebay_get_inventory_location',
     description: 'Get a specific inventory location',
     inputSchema: {
-      type: 'object',
-      properties: {
-        merchantLocationKey: {
-          type: 'string',
-          description: 'The merchant location key'
-        }
-      },
-      required: ['merchantLocationKey']
+      merchantLocationKey: z.string().describe('The merchant location key')
     }
   },
   {
     name: 'ebay_create_or_replace_inventory_location',
     description: 'Create or replace an inventory location',
     inputSchema: {
-      type: 'object',
-      properties: {
-        merchantLocationKey: {
-          type: 'string',
-          description: 'The merchant location key'
-        },
-        location: {
-          type: 'object',
-          description: 'Location details'
-        }
-      },
-      required: ['merchantLocationKey', 'location']
+      merchantLocationKey: z.string().describe('The merchant location key'),
+      location: z.record(z.unknown()).describe('Location details')
     }
   },
   {
     name: 'ebay_delete_inventory_location',
     description: 'Delete an inventory location',
     inputSchema: {
-      type: 'object',
-      properties: {
-        merchantLocationKey: {
-          type: 'string',
-          description: 'The merchant location key'
-        }
-      },
-      required: ['merchantLocationKey']
+      merchantLocationKey: z.string().describe('The merchant location key')
     }
   },
   {
     name: 'ebay_disable_inventory_location',
     description: 'Disable an inventory location',
     inputSchema: {
-      type: 'object',
-      properties: {
-        merchantLocationKey: {
-          type: 'string',
-          description: 'The merchant location key'
-        }
-      },
-      required: ['merchantLocationKey']
+      merchantLocationKey: z.string().describe('The merchant location key')
     }
   },
   {
     name: 'ebay_enable_inventory_location',
     description: 'Enable an inventory location',
     inputSchema: {
-      type: 'object',
-      properties: {
-        merchantLocationKey: {
-          type: 'string',
-          description: 'The merchant location key'
-        }
-      },
-      required: ['merchantLocationKey']
+      merchantLocationKey: z.string().describe('The merchant location key')
     }
   },
   {
     name: 'ebay_update_location_details',
     description: 'Update location details for an inventory location',
     inputSchema: {
-      type: 'object',
-      properties: {
-        merchantLocationKey: {
-          type: 'string',
-          description: 'The merchant location key'
-        },
-        locationDetails: {
-          type: 'object',
-          description: 'Location detail updates'
-        }
-      },
-      required: ['merchantLocationKey', 'locationDetails']
+      merchantLocationKey: z.string().describe('The merchant location key'),
+      locationDetails: z.record(z.unknown()).describe('Location detail updates')
     }
   },
   // Offer Management
@@ -1000,102 +496,50 @@ export const inventoryTools: ToolDefinition[] = [
     name: 'ebay_get_offer',
     description: 'Get a specific offer by ID',
     inputSchema: {
-      type: 'object',
-      properties: {
-        offerId: {
-          type: 'string',
-          description: 'The offer ID'
-        }
-      },
-      required: ['offerId']
+      offerId: z.string().describe('The offer ID')
     }
   },
   {
     name: 'ebay_update_offer',
     description: 'Update an existing offer',
     inputSchema: {
-      type: 'object',
-      properties: {
-        offerId: {
-          type: 'string',
-          description: 'The offer ID'
-        },
-        offer: {
-          type: 'object',
-          description: 'Updated offer details'
-        }
-      },
-      required: ['offerId', 'offer']
+      offerId: z.string().describe('The offer ID'),
+      offer: z.record(z.unknown()).describe('Updated offer details')
     }
   },
   {
     name: 'ebay_delete_offer',
     description: 'Delete an offer',
     inputSchema: {
-      type: 'object',
-      properties: {
-        offerId: {
-          type: 'string',
-          description: 'The offer ID to delete'
-        }
-      },
-      required: ['offerId']
+      offerId: z.string().describe('The offer ID to delete')
     }
   },
   {
     name: 'ebay_withdraw_offer',
     description: 'Withdraw a published offer',
     inputSchema: {
-      type: 'object',
-      properties: {
-        offerId: {
-          type: 'string',
-          description: 'The offer ID to withdraw'
-        }
-      },
-      required: ['offerId']
+      offerId: z.string().describe('The offer ID to withdraw')
     }
   },
   {
     name: 'ebay_bulk_create_offer',
     description: 'Bulk create multiple offers',
     inputSchema: {
-      type: 'object',
-      properties: {
-        requests: {
-          type: 'object',
-          description: 'Bulk offer creation requests'
-        }
-      },
-      required: ['requests']
+      requests: z.record(z.unknown()).describe('Bulk offer creation requests')
     }
   },
   {
     name: 'ebay_bulk_publish_offer',
     description: 'Bulk publish multiple offers',
     inputSchema: {
-      type: 'object',
-      properties: {
-        requests: {
-          type: 'object',
-          description: 'Bulk offer publish requests'
-        }
-      },
-      required: ['requests']
+      requests: z.record(z.unknown()).describe('Bulk offer publish requests')
     }
   },
   {
     name: 'ebay_get_listing_fees',
     description: 'Get listing fees for offers before publishing',
     inputSchema: {
-      type: 'object',
-      properties: {
-        offers: {
-          type: 'object',
-          description: 'Offers to calculate listing fees for'
-        }
-      },
-      required: ['offers']
+      offers: z.record(z.unknown()).describe('Offers to calculate listing fees for')
     }
   },
   // Listing Migration
@@ -1103,14 +547,7 @@ export const inventoryTools: ToolDefinition[] = [
     name: 'ebay_bulk_migrate_listing',
     description: 'Bulk migrate listings to the inventory model',
     inputSchema: {
-      type: 'object',
-      properties: {
-        requests: {
-          type: 'object',
-          description: 'Bulk listing migration requests'
-        }
-      },
-      required: ['requests']
+      requests: z.record(z.unknown()).describe('Bulk listing migration requests')
     }
   }
 ];
@@ -1120,131 +557,50 @@ export const fulfillmentTools: ToolDefinition[] = [
     name: 'ebay_get_orders',
     description: 'Retrieve orders for the seller',
     inputSchema: {
-      type: 'object',
-      properties: {
-        filter: {
-          type: 'string',
-          description: 'Filter criteria (e.g., orderfulfillmentstatus:{NOT_STARTED})'
-        },
-        limit: {
-          type: 'number',
-          description: 'Number of orders to return'
-        },
-        offset: {
-          type: 'number',
-          description: 'Number of orders to skip'
-        }
-      }
+      filter: z.string().optional().describe('Filter criteria (e.g., orderfulfillmentstatus:{NOT_STARTED})'),
+      limit: z.number().optional().describe('Number of orders to return'),
+      offset: z.number().optional().describe('Number of orders to skip')
     }
   },
   {
     name: 'ebay_get_order',
     description: 'Get details of a specific order',
     inputSchema: {
-      type: 'object',
-      properties: {
-        orderId: {
-          type: 'string',
-          description: 'The unique order ID'
-        }
-      },
-      required: ['orderId']
+      orderId: z.string().describe('The unique order ID')
     }
   },
   {
     name: 'ebay_create_shipping_fulfillment',
     description: 'Create a shipping fulfillment for an order',
     inputSchema: {
-      type: 'object',
-      properties: {
-        orderId: {
-          type: 'string',
-          description: 'The order ID'
-        },
-        fulfillment: {
-          type: 'object',
-          description: 'Shipping fulfillment details including tracking number'
-        }
-      },
-      required: ['orderId', 'fulfillment']
+      orderId: z.string().describe('The order ID'),
+      fulfillment: z.record(z.unknown()).describe('Shipping fulfillment details including tracking number')
     }
   },
   {
     name: 'ebay_issue_refund',
     description: 'Issue a full or partial refund for an eBay order. Use this to refund buyers for orders, including specifying the refund amount and reason.',
     inputSchema: {
-      type: 'object',
-      properties: {
-        orderId: {
-          type: 'string',
-          description: 'The unique eBay order ID to refund'
-        },
-        refundData: {
-          type: 'object',
-          description: 'Refund details including amount, reason, and optional comment. Must include reasonForRefund (required), and either refundItems (for line item refunds) OR orderLevelRefundAmount (for full order refunds).',
-          properties: {
-            reasonForRefund: {
-              type: 'string',
-              description: 'REQUIRED. Reason code: BUYER_CANCEL, OUT_OF_STOCK, FOUND_CHEAPER_PRICE, INCORRECT_PRICE, ITEM_DAMAGED, ITEM_DEFECTIVE, LOST_IN_TRANSIT, MUTUALLY_AGREED, SELLER_CANCEL'
-            },
-            comment: {
-              type: 'string',
-              description: 'Optional comment to buyer about the refund (max 100 characters)'
-            },
-            refundItems: {
-              type: 'array',
-              description: 'Array of individual line items to refund. Use this for partial refunds of specific items. Each item requires lineItemId and refundAmount.',
-              items: {
-                type: 'object',
-                properties: {
-                  lineItemId: {
-                    type: 'string',
-                    description: 'The unique identifier of the order line item to refund'
-                  },
-                  refundAmount: {
-                    type: 'object',
-                    description: 'The amount to refund for this line item',
-                    properties: {
-                      value: {
-                        type: 'string',
-                        description: 'The monetary amount (e.g., "25.99")'
-                      },
-                      currency: {
-                        type: 'string',
-                        description: 'Three-letter ISO 4217 currency code (e.g., "USD")'
-                      }
-                    }
-                  },
-                  legacyReference: {
-                    type: 'object',
-                    description: 'Optional legacy item ID/transaction ID pair for identifying the line item',
-                    properties: {
-                      legacyItemId: { type: 'string' },
-                      legacyTransactionId: { type: 'string' }
-                    }
-                  }
-                }
-              }
-            },
-            orderLevelRefundAmount: {
-              type: 'object',
-              description: 'Use this to refund the entire order amount. Alternative to refundItems. Include value and currency.',
-              properties: {
-                value: {
-                  type: 'string',
-                  description: 'The monetary amount (e.g., "99.99")'
-                },
-                currency: {
-                  type: 'string',
-                  description: 'Three-letter ISO 4217 currency code (e.g., "USD")'
-                }
-              }
-            }
-          },
-          required: ['reasonForRefund']
-        }
-      },
-      required: ['orderId', 'refundData']
+      orderId: z.string().describe('The unique eBay order ID to refund'),
+      refundData: z.object({
+        reasonForRefund: z.string().describe('REQUIRED. Reason code: BUYER_CANCEL, OUT_OF_STOCK, FOUND_CHEAPER_PRICE, INCORRECT_PRICE, ITEM_DAMAGED, ITEM_DEFECTIVE, LOST_IN_TRANSIT, MUTUALLY_AGREED, SELLER_CANCEL'),
+        comment: z.string().optional().describe('Optional comment to buyer about the refund (max 100 characters)'),
+        refundItems: z.array(z.object({
+          lineItemId: z.string().describe('The unique identifier of the order line item to refund'),
+          refundAmount: z.object({
+            value: z.string().describe('The monetary amount (e.g., "25.99")'),
+            currency: z.string().describe('Three-letter ISO 4217 currency code (e.g., "USD")')
+          }).optional().describe('The amount to refund for this line item'),
+          legacyReference: z.object({
+            legacyItemId: z.string().optional(),
+            legacyTransactionId: z.string().optional()
+          }).optional().describe('Optional legacy item ID/transaction ID pair for identifying the line item')
+        })).optional().describe('Array of individual line items to refund. Use this for partial refunds of specific items. Each item requires lineItemId and refundAmount.'),
+        orderLevelRefundAmount: z.object({
+          value: z.string().describe('The monetary amount (e.g., "99.99")'),
+          currency: z.string().describe('Three-letter ISO 4217 currency code (e.g., "USD")')
+        }).optional().describe('Use this to refund the entire order amount. Alternative to refundItems. Include value and currency.')
+      }).describe('Refund details including amount, reason, and optional comment. Must include reasonForRefund (required), and either refundItems (for line item refunds) OR orderLevelRefundAmount (for full order refunds).')
     }
   }
 ];
@@ -1254,194 +610,82 @@ export const marketingTools: ToolDefinition[] = [
     name: 'ebay_get_campaigns',
     description: 'Get marketing campaigns for the seller',
     inputSchema: {
-      type: 'object',
-      properties: {
-        campaignStatus: {
-          type: 'string',
-          description: 'Filter by campaign status (RUNNING, PAUSED, ENDED)'
-        },
-        marketplaceId: {
-          type: 'string',
-          description: 'Filter by marketplace ID'
-        },
-        limit: {
-          type: 'number',
-          description: 'Number of campaigns to return'
-        }
-      }
+      campaignStatus: z.string().optional().describe('Filter by campaign status (RUNNING, PAUSED, ENDED)'),
+      marketplaceId: z.string().optional().describe('Filter by marketplace ID'),
+      limit: z.number().optional().describe('Number of campaigns to return')
     }
   },
   {
     name: 'ebay_get_campaign',
     description: 'Get details of a specific marketing campaign by ID',
     inputSchema: {
-      type: 'object',
-      properties: {
-        campaignId: {
-          type: 'string',
-          description: 'The unique campaign ID'
-        }
-      },
-      required: ['campaignId']
+      campaignId: z.string().describe('The unique campaign ID')
     }
   },
   {
     name: 'ebay_pause_campaign',
     description: 'Pause a running marketing campaign. Use this to temporarily stop a campaign without ending it.',
     inputSchema: {
-      type: 'object',
-      properties: {
-        campaignId: {
-          type: 'string',
-          description: 'The unique campaign ID to pause'
-        }
-      },
-      required: ['campaignId']
+      campaignId: z.string().describe('The unique campaign ID to pause')
     }
   },
   {
     name: 'ebay_resume_campaign',
     description: 'Resume a paused marketing campaign. Use this to restart a campaign that was previously paused.',
     inputSchema: {
-      type: 'object',
-      properties: {
-        campaignId: {
-          type: 'string',
-          description: 'The unique campaign ID to resume'
-        }
-      },
-      required: ['campaignId']
+      campaignId: z.string().describe('The unique campaign ID to resume')
     }
   },
   {
     name: 'ebay_end_campaign',
     description: 'Permanently end a marketing campaign. Note: Ended campaigns cannot be restarted.',
     inputSchema: {
-      type: 'object',
-      properties: {
-        campaignId: {
-          type: 'string',
-          description: 'The unique campaign ID to end'
-        }
-      },
-      required: ['campaignId']
+      campaignId: z.string().describe('The unique campaign ID to end')
     }
   },
   {
     name: 'ebay_update_campaign_identification',
     description: 'Update a campaign\'s name or other identification details. Note: eBay does not support directly updating campaign budget or duration - you must clone the campaign with new settings.',
     inputSchema: {
-      type: 'object',
-      properties: {
-        campaignId: {
-          type: 'string',
-          description: 'The unique campaign ID'
-        },
-        updateData: {
-          type: 'object',
-          description: 'Campaign identification data to update (e.g., campaign name)',
-          properties: {
-            campaignName: {
-              type: 'string',
-              description: 'New campaign name'
-            }
-          }
-        }
-      },
-      required: ['campaignId', 'updateData']
+      campaignId: z.string().describe('The unique campaign ID'),
+      updateData: z.object({
+        campaignName: z.string().optional().describe('New campaign name')
+      }).describe('Campaign identification data to update (e.g., campaign name)')
     }
   },
   {
     name: 'ebay_clone_campaign',
     description: 'Clone an existing campaign with new settings. Use this to create a campaign with modified budget or duration, as eBay does not support direct budget/duration updates.',
     inputSchema: {
-      type: 'object',
-      properties: {
-        campaignId: {
-          type: 'string',
-          description: 'The campaign ID to clone'
-        },
-        cloneData: {
-          type: 'object',
-          description: 'New campaign settings including name, budget, start/end dates',
-          properties: {
-            campaignName: {
-              type: 'string',
-              description: 'Name for the new cloned campaign'
-            },
-            fundingStrategy: {
-              type: 'object',
-              description: 'Budget settings for the campaign. Includes fundingModel (COST_PER_SALE or COST_PER_CLICK) and bidPercentage.',
-              properties: {
-                fundingModel: {
-                  type: 'string',
-                  description: 'The funding model for the campaign. Valid values: "COST_PER_SALE" (CPS) or "COST_PER_CLICK" (CPC)'
-                },
-                bidPercentage: {
-                  type: 'string',
-                  description: 'The bid percentage for CPS campaigns (e.g., "10.5" for 10.5%). Required for COST_PER_SALE funding model.'
-                }
-              }
-            },
-            startDate: {
-              type: 'string',
-              description: 'Campaign start date in UTC format (yyyy-MM-ddThh:mm:ssZ, e.g., "2025-01-15T00:00:00Z")'
-            },
-            endDate: {
-              type: 'string',
-              description: 'Campaign end date in UTC format (yyyy-MM-ddThh:mm:ssZ, e.g., "2025-12-31T23:59:59Z")'
-            }
-          }
-        }
-      },
-      required: ['campaignId', 'cloneData']
+      campaignId: z.string().describe('The campaign ID to clone'),
+      cloneData: z.object({
+        campaignName: z.string().optional().describe('Name for the new cloned campaign'),
+        fundingStrategy: z.object({
+          fundingModel: z.string().optional().describe('The funding model for the campaign. Valid values: "COST_PER_SALE" (CPS) or "COST_PER_CLICK" (CPC)'),
+          bidPercentage: z.string().optional().describe('The bid percentage for CPS campaigns (e.g., "10.5" for 10.5%). Required for COST_PER_SALE funding model.')
+        }).optional().describe('Budget settings for the campaign. Includes fundingModel (COST_PER_SALE or COST_PER_CLICK) and bidPercentage.'),
+        startDate: z.string().optional().describe('Campaign start date in UTC format (yyyy-MM-ddThh:mm:ssZ, e.g., "2025-01-15T00:00:00Z")'),
+        endDate: z.string().optional().describe('Campaign end date in UTC format (yyyy-MM-ddThh:mm:ssZ, e.g., "2025-12-31T23:59:59Z")')
+      }).describe('New campaign settings including name, budget, start/end dates')
     }
   },
   {
     name: 'ebay_get_promotions',
     description: 'Get promotions for the seller',
     inputSchema: {
-      type: 'object',
-      properties: {
-        marketplaceId: {
-          type: 'string',
-          description: 'Filter by marketplace ID'
-        },
-        limit: {
-          type: 'number',
-          description: 'Number of promotions to return'
-        }
-      }
+      marketplaceId: z.string().optional().describe('Filter by marketplace ID'),
+      limit: z.number().optional().describe('Number of promotions to return')
     }
   },
   {
     name: 'ebay_find_listing_recommendations',
     description: 'Find listing recommendations for items',
     inputSchema: {
-      type: 'object',
-      properties: {
-        listingIds: {
-          type: 'array',
-          items: { type: 'string' },
-          description: 'Array of listing IDs to get recommendations for'
-        },
-        filter: {
-          type: 'string',
-          description: 'Filter criteria'
-        },
-        limit: {
-          type: 'number',
-          description: 'Number of recommendations to return'
-        },
-        offset: {
-          type: 'number',
-          description: 'Number to skip'
-        },
-        marketplaceId: {
-          type: 'string',
-          description: 'Marketplace ID'
-        }
-      }
+      listingIds: z.array(z.string()).optional().describe('Array of listing IDs to get recommendations for'),
+      filter: z.string().optional().describe('Filter criteria'),
+      limit: z.number().optional().describe('Number of recommendations to return'),
+      offset: z.number().optional().describe('Number to skip'),
+      marketplaceId: z.string().optional().describe('Marketplace ID')
     }
   }
 ];
@@ -1451,74 +695,32 @@ export const analyticsTools: ToolDefinition[] = [
     name: 'ebay_get_traffic_report',
     description: 'Get traffic report for listings',
     inputSchema: {
-      type: 'object',
-      properties: {
-        dimension: {
-          type: 'string',
-          description: 'Dimension for the report (e.g., LISTING, DAY)'
-        },
-        filter: {
-          type: 'string',
-          description: 'Filter criteria'
-        },
-        metric: {
-          type: 'string',
-          description: 'Metrics to retrieve (e.g., CLICK_THROUGH_RATE, IMPRESSION)'
-        },
-        sort: {
-          type: 'string',
-          description: 'Sort order'
-        }
-      },
-      required: ['dimension', 'filter', 'metric']
+      dimension: z.string().describe('Dimension for the report (e.g., LISTING, DAY)'),
+      filter: z.string().describe('Filter criteria'),
+      metric: z.string().describe('Metrics to retrieve (e.g., CLICK_THROUGH_RATE, IMPRESSION)'),
+      sort: z.string().optional().describe('Sort order')
     }
   },
   {
     name: 'ebay_find_seller_standards_profiles',
     description: 'Find all seller standards profiles',
-    inputSchema: {
-      type: 'object',
-      properties: {}
-    }
+    inputSchema: {}
   },
   {
     name: 'ebay_get_seller_standards_profile',
     description: 'Get a specific seller standards profile',
     inputSchema: {
-      type: 'object',
-      properties: {
-        program: {
-          type: 'string',
-          description: 'The program (e.g., CUSTOMER_SERVICE)'
-        },
-        cycle: {
-          type: 'string',
-          description: 'The cycle (e.g., CURRENT)'
-        }
-      },
-      required: ['program', 'cycle']
+      program: z.string().describe('The program (e.g., CUSTOMER_SERVICE)'),
+      cycle: z.string().describe('The cycle (e.g., CURRENT)')
     }
   },
   {
     name: 'ebay_get_customer_service_metric',
     description: 'Get customer service metrics',
     inputSchema: {
-      type: 'object',
-      properties: {
-        customerServiceMetricType: {
-          type: 'string',
-          description: 'Type of metric'
-        },
-        evaluationType: {
-          type: 'string',
-          description: 'Evaluation type'
-        },
-        evaluationMarketplaceId: {
-          type: 'string',
-          description: 'Marketplace ID for evaluation'
-        }
-      },
-      required: ['customerServiceMetricType', 'evaluationType', 'evaluationMarketplaceId']
+      customerServiceMetricType: z.string().describe('Type of metric'),
+      evaluationType: z.string().describe('Evaluation type'),
+      evaluationMarketplaceId: z.string().describe('Marketplace ID for evaluation')
     }
   }
 ];
@@ -1528,154 +730,70 @@ export const metadataTools: ToolDefinition[] = [
     name: 'ebay_get_automotive_parts_compatibility_policies',
     description: 'Get automotive parts compatibility policies for a marketplace',
     inputSchema: {
-      type: 'object',
-      properties: {
-        marketplaceId: {
-          type: 'string',
-          description: 'Marketplace ID'
-        },
-        filter: {
-          type: 'string',
-          description: 'Filter criteria'
-        }
-      },
-      required: ['marketplaceId']
+      marketplaceId: z.string().describe('Marketplace ID'),
+      filter: z.string().optional().describe('Filter criteria')
     }
   },
   {
     name: 'ebay_get_category_policies',
     description: 'Get category policies for a marketplace',
     inputSchema: {
-      type: 'object',
-      properties: {
-        marketplaceId: {
-          type: 'string',
-          description: 'Marketplace ID'
-        },
-        filter: {
-          type: 'string',
-          description: 'Filter criteria'
-        }
-      },
-      required: ['marketplaceId']
+      marketplaceId: z.string().describe('Marketplace ID'),
+      filter: z.string().optional().describe('Filter criteria')
     }
   },
   {
     name: 'ebay_get_extended_producer_responsibility_policies',
     description: 'Get extended producer responsibility policies for a marketplace',
     inputSchema: {
-      type: 'object',
-      properties: {
-        marketplaceId: {
-          type: 'string',
-          description: 'Marketplace ID'
-        },
-        filter: {
-          type: 'string',
-          description: 'Filter criteria'
-        }
-      },
-      required: ['marketplaceId']
+      marketplaceId: z.string().describe('Marketplace ID'),
+      filter: z.string().optional().describe('Filter criteria')
     }
   },
   {
     name: 'ebay_get_hazardous_materials_labels',
     description: 'Get hazardous materials labels for a marketplace',
     inputSchema: {
-      type: 'object',
-      properties: {
-        marketplaceId: {
-          type: 'string',
-          description: 'Marketplace ID'
-        }
-      },
-      required: ['marketplaceId']
+      marketplaceId: z.string().describe('Marketplace ID')
     }
   },
   {
     name: 'ebay_get_item_condition_policies',
     description: 'Get item condition policies for a marketplace',
     inputSchema: {
-      type: 'object',
-      properties: {
-        marketplaceId: {
-          type: 'string',
-          description: 'Marketplace ID'
-        },
-        filter: {
-          type: 'string',
-          description: 'Filter criteria'
-        }
-      },
-      required: ['marketplaceId']
+      marketplaceId: z.string().describe('Marketplace ID'),
+      filter: z.string().optional().describe('Filter criteria')
     }
   },
   {
     name: 'ebay_get_listing_structure_policies',
     description: 'Get listing structure policies for a marketplace',
     inputSchema: {
-      type: 'object',
-      properties: {
-        marketplaceId: {
-          type: 'string',
-          description: 'Marketplace ID'
-        },
-        filter: {
-          type: 'string',
-          description: 'Filter criteria'
-        }
-      },
-      required: ['marketplaceId']
+      marketplaceId: z.string().describe('Marketplace ID'),
+      filter: z.string().optional().describe('Filter criteria')
     }
   },
   {
     name: 'ebay_get_negotiated_price_policies',
     description: 'Get negotiated price policies for a marketplace',
     inputSchema: {
-      type: 'object',
-      properties: {
-        marketplaceId: {
-          type: 'string',
-          description: 'Marketplace ID'
-        },
-        filter: {
-          type: 'string',
-          description: 'Filter criteria'
-        }
-      },
-      required: ['marketplaceId']
+      marketplaceId: z.string().describe('Marketplace ID'),
+      filter: z.string().optional().describe('Filter criteria')
     }
   },
   {
     name: 'ebay_get_product_safety_labels',
     description: 'Get product safety labels for a marketplace',
     inputSchema: {
-      type: 'object',
-      properties: {
-        marketplaceId: {
-          type: 'string',
-          description: 'Marketplace ID'
-        }
-      },
-      required: ['marketplaceId']
+      marketplaceId: z.string().describe('Marketplace ID')
     }
   },
   {
     name: 'ebay_get_regulatory_policies',
     description: 'Get regulatory policies for a marketplace',
     inputSchema: {
-      type: 'object',
-      properties: {
-        marketplaceId: {
-          type: 'string',
-          description: 'Marketplace ID'
-        },
-        filter: {
-          type: 'string',
-          description: 'Filter criteria'
-        }
-      },
-      required: ['marketplaceId']
+      marketplaceId: z.string().describe('Marketplace ID'),
+      filter: z.string().optional().describe('Filter criteria')
     }
   },
 
@@ -1683,206 +801,97 @@ export const metadataTools: ToolDefinition[] = [
     name: 'ebay_get_shipping_cost_type_policies',
     description: 'Get shipping cost type policies for a marketplace',
     inputSchema: {
-      type: 'object',
-      properties: {
-        marketplaceId: {
-          type: 'string',
-          description: 'Marketplace ID'
-        },
-        filter: {
-          type: 'string',
-          description: 'Filter criteria'
-        }
-      },
-      required: ['marketplaceId']
+      marketplaceId: z.string().describe('Marketplace ID'),
+      filter: z.string().optional().describe('Filter criteria')
     }
   },
   {
     name: 'ebay_get_classified_ad_policies',
     description: 'Get classified ad policies for a marketplace',
     inputSchema: {
-      type: 'object',
-      properties: {
-        marketplaceId: {
-          type: 'string',
-          description: 'Marketplace ID'
-        },
-        filter: {
-          type: 'string',
-          description: 'Filter criteria'
-        }
-      },
-      required: ['marketplaceId']
+      marketplaceId: z.string().describe('Marketplace ID'),
+      filter: z.string().optional().describe('Filter criteria')
     }
   },
   {
     name: 'ebay_get_currencies',
     description: 'Get currencies for a marketplace',
     inputSchema: {
-      type: 'object',
-      properties: {
-        marketplaceId: {
-          type: 'string',
-          description: 'Marketplace ID'
-        }
-      },
-      required: ['marketplaceId']
+      marketplaceId: z.string().describe('Marketplace ID')
     }
   },
   {
     name: 'ebay_get_listing_type_policies',
     description: 'Get listing type policies for a marketplace',
     inputSchema: {
-      type: 'object',
-      properties: {
-        marketplaceId: {
-          type: 'string',
-          description: 'Marketplace ID'
-        },
-        filter: {
-          type: 'string',
-          description: 'Filter criteria'
-        }
-      },
-      required: ['marketplaceId']
+      marketplaceId: z.string().describe('Marketplace ID'),
+      filter: z.string().optional().describe('Filter criteria')
     }
   },
   {
     name: 'ebay_get_motors_listing_policies',
     description: 'Get motors listing policies for a marketplace',
     inputSchema: {
-      type: 'object',
-      properties: {
-        marketplaceId: {
-          type: 'string',
-          description: 'Marketplace ID'
-        },
-        filter: {
-          type: 'string',
-          description: 'Filter criteria'
-        }
-      },
-      required: ['marketplaceId']
+      marketplaceId: z.string().describe('Marketplace ID'),
+      filter: z.string().optional().describe('Filter criteria')
     }
   },
   {
     name: 'ebay_get_shipping_policies',
     description: 'Get shipping policies for a marketplace',
     inputSchema: {
-      type: 'object',
-      properties: {
-        marketplaceId: {
-          type: 'string',
-          description: 'Marketplace ID'
-        },
-        filter: {
-          type: 'string',
-          description: 'Filter criteria'
-        }
-      },
-      required: ['marketplaceId']
+      marketplaceId: z.string().describe('Marketplace ID'),
+      filter: z.string().optional().describe('Filter criteria')
     }
   },
   {
     name: 'ebay_get_site_visibility_policies',
     description: 'Get site visibility policies for a marketplace',
     inputSchema: {
-      type: 'object',
-      properties: {
-        marketplaceId: {
-          type: 'string',
-          description: 'Marketplace ID'
-        },
-        filter: {
-          type: 'string',
-          description: 'Filter criteria'
-        }
-      },
-      required: ['marketplaceId']
+      marketplaceId: z.string().describe('Marketplace ID'),
+      filter: z.string().optional().describe('Filter criteria')
     }
   },
   {
     name: 'ebay_get_compatibilities_by_specification',
     description: 'Get compatibilities by specification',
     inputSchema: {
-      type: 'object',
-      properties: {
-        specification: {
-          type: 'object',
-          description: 'Compatibility specification object'
-        }
-      },
-      required: ['specification']
+      specification: z.record(z.unknown()).describe('Compatibility specification object')
     }
   },
   {
     name: 'ebay_get_compatibility_property_names',
     description: 'Get compatibility property names',
     inputSchema: {
-      type: 'object',
-      properties: {
-        data: {
-          type: 'object',
-          description: 'Request data for getting compatibility property names'
-        }
-      },
-      required: ['data']
+      data: z.record(z.unknown()).describe('Request data for getting compatibility property names')
     }
   },
   {
     name: 'ebay_get_compatibility_property_values',
     description: 'Get compatibility property values',
     inputSchema: {
-      type: 'object',
-      properties: {
-        data: {
-          type: 'object',
-          description: 'Request data for getting compatibility property values'
-        }
-      },
-      required: ['data']
+      data: z.record(z.unknown()).describe('Request data for getting compatibility property values')
     }
   },
   {
     name: 'ebay_get_multi_compatibility_property_values',
     description: 'Get multiple compatibility property values',
     inputSchema: {
-      type: 'object',
-      properties: {
-        data: {
-          type: 'object',
-          description: 'Request data for getting multi compatibility property values'
-        }
-      },
-      required: ['data']
+      data: z.record(z.unknown()).describe('Request data for getting multi compatibility property values')
     }
   },
   {
     name: 'ebay_get_product_compatibilities',
     description: 'Get product compatibilities',
     inputSchema: {
-      type: 'object',
-      properties: {
-        data: {
-          type: 'object',
-          description: 'Request data for getting product compatibilities'
-        }
-      },
-      required: ['data']
+      data: z.record(z.unknown()).describe('Request data for getting product compatibilities')
     }
   },
   {
     name: 'ebay_get_sales_tax_jurisdictions',
     description: 'Get sales tax jurisdictions for a country',
     inputSchema: {
-      type: 'object',
-      properties: {
-        countryCode: {
-          type: 'string',
-          description: 'Country code (e.g., US)'
-        }
-      },
-      required: ['countryCode']
+      countryCode: z.string().describe('Country code (e.g., US)')
     }
   }
 ];
@@ -1892,64 +901,30 @@ export const taxonomyTools: ToolDefinition[] = [
     name: 'ebay_get_default_category_tree_id',
     description: 'Get the default category tree ID for a marketplace',
     inputSchema: {
-      type: 'object',
-      properties: {
-        marketplaceId: {
-          type: 'string',
-          description: 'Marketplace ID (e.g., EBAY_US)'
-        }
-      },
-      required: ['marketplaceId']
+      marketplaceId: z.string().describe('Marketplace ID (e.g., EBAY_US)')
     }
   },
   {
     name: 'ebay_get_category_tree',
     description: 'Get category tree by ID',
     inputSchema: {
-      type: 'object',
-      properties: {
-        categoryTreeId: {
-          type: 'string',
-          description: 'Category tree ID'
-        }
-      },
-      required: ['categoryTreeId']
+      categoryTreeId: z.string().describe('Category tree ID')
     }
   },
   {
     name: 'ebay_get_category_suggestions',
     description: 'Get category suggestions based on query',
     inputSchema: {
-      type: 'object',
-      properties: {
-        categoryTreeId: {
-          type: 'string',
-          description: 'Category tree ID'
-        },
-        query: {
-          type: 'string',
-          description: 'Search query for category suggestions'
-        }
-      },
-      required: ['categoryTreeId', 'query']
+      categoryTreeId: z.string().describe('Category tree ID'),
+      query: z.string().describe('Search query for category suggestions')
     }
   },
   {
     name: 'ebay_get_item_aspects_for_category',
     description: 'Get item aspects for a specific category',
     inputSchema: {
-      type: 'object',
-      properties: {
-        categoryTreeId: {
-          type: 'string',
-          description: 'Category tree ID'
-        },
-        categoryId: {
-          type: 'string',
-          description: 'Category ID'
-        }
-      },
-      required: ['categoryTreeId', 'categoryId']
+      categoryTreeId: z.string().describe('Category tree ID'),
+      categoryId: z.string().describe('Category ID')
     }
   }
 ];
@@ -1960,39 +935,17 @@ export const communicationTools: ToolDefinition[] = [
     name: 'ebay_get_offers_to_buyers',
     description: 'Get offers to buyers (Best Offers) for the seller',
     inputSchema: {
-      type: 'object',
-      properties: {
-        filter: {
-          type: 'string',
-          description: 'Filter criteria for offers'
-        },
-        limit: {
-          type: 'number',
-          description: 'Number of offers to return'
-        },
-        offset: {
-          type: 'number',
-          description: 'Number of offers to skip'
-        }
-      }
+      filter: z.string().optional().describe('Filter criteria for offers'),
+      limit: z.number().optional().describe('Number of offers to return'),
+      offset: z.number().optional().describe('Number of offers to skip')
     }
   },
   {
     name: 'ebay_send_offer_to_interested_buyers',
     description: 'Send offer to interested buyers',
     inputSchema: {
-      type: 'object',
-      properties: {
-        offerId: {
-          type: 'string',
-          description: 'The offer ID'
-        },
-        offerData: {
-          type: 'object',
-          description: 'Offer details to send to buyers'
-        }
-      },
-      required: ['offerId', 'offerData']
+      offerId: z.string().describe('The offer ID'),
+      offerData: z.record(z.unknown()).describe('Offer details to send to buyers')
     }
   },
   // Message API
@@ -2000,154 +953,64 @@ export const communicationTools: ToolDefinition[] = [
     name: 'ebay_search_messages',
     description: 'Search for buyer-seller messages',
     inputSchema: {
-      type: 'object',
-      properties: {
-        filter: {
-          type: 'string',
-          description: 'Filter criteria for messages'
-        },
-        limit: {
-          type: 'number',
-          description: 'Number of messages to return'
-        },
-        offset: {
-          type: 'number',
-          description: 'Number of messages to skip'
-        }
-      }
+      filter: z.string().optional().describe('Filter criteria for messages'),
+      limit: z.number().optional().describe('Number of messages to return'),
+      offset: z.number().optional().describe('Number of messages to skip')
     }
   },
   {
     name: 'ebay_get_message',
     description: 'Get a specific message by ID',
     inputSchema: {
-      type: 'object',
-      properties: {
-        messageId: {
-          type: 'string',
-          description: 'The message ID'
-        }
-      },
-      required: ['messageId']
+      messageId: z.string().describe('The message ID')
     }
   },
   {
     name: 'ebay_send_message',
     description: 'Send a direct message to a buyer regarding a specific transaction or inquiry. Use this to communicate about orders, answer questions, resolve issues, or provide updates.',
     inputSchema: {
-      type: 'object',
-      properties: {
-        messageData: {
-          type: 'object',
-          description: 'Message details including recipient and content. Must include messageText (required), and either conversationId (for replies) OR otherPartyUsername (for new messages).',
-          properties: {
-            conversationId: {
-              type: 'string',
-              description: 'Optional conversation ID to reply to an existing thread. Use getConversations to retrieve conversation IDs. Required if replying to existing conversation.'
-            },
-            messageText: {
-              type: 'string',
-              description: 'REQUIRED. The text of the message to send (max 2000 characters).'
-            },
-            otherPartyUsername: {
-              type: 'string',
-              description: 'eBay username of the other party (buyer or seller). Required when starting a new conversation.'
-            },
-            emailCopyToSender: {
-              type: 'boolean',
-              description: 'If true, a copy of the message will be emailed to the sender.'
-            },
-            reference: {
-              type: 'object',
-              description: 'Optional reference to associate message with a listing or order.',
-              properties: {
-                referenceId: {
-                  type: 'string',
-                  description: 'The ID of the listing or order to reference (e.g., item ID or order ID)'
-                },
-                referenceType: {
-                  type: 'string',
-                  description: 'Type of reference. Valid values: "LISTING" (for item listings) or "ORDER" (for orders)'
-                }
-              }
-            },
-            messageMedia: {
-              type: 'array',
-              description: 'Optional array of media attachments (max 5 per message)',
-              items: {
-                type: 'object',
-                properties: {
-                  mediaUrl: {
-                    type: 'string',
-                    description: 'URL of the media to attach'
-                  },
-                  mediaType: {
-                    type: 'string',
-                    description: 'MIME type of the media (e.g., "image/jpeg")'
-                  }
-                }
-              }
-            }
-          },
-          required: ['messageText']
-        }
-      },
-      required: ['messageData']
+      messageData: z.object({
+        conversationId: z.string().optional().describe('Optional conversation ID to reply to an existing thread. Use getConversations to retrieve conversation IDs. Required if replying to existing conversation.'),
+        messageText: z.string().describe('REQUIRED. The text of the message to send (max 2000 characters).'),
+        otherPartyUsername: z.string().optional().describe('eBay username of the other party (buyer or seller). Required when starting a new conversation.'),
+        emailCopyToSender: z.boolean().optional().describe('If true, a copy of the message will be emailed to the sender.'),
+        reference: z.object({
+          referenceId: z.string().optional().describe('The ID of the listing or order to reference (e.g., item ID or order ID)'),
+          referenceType: z.string().optional().describe('Type of reference. Valid values: "LISTING" (for item listings) or "ORDER" (for orders)')
+        }).optional().describe('Optional reference to associate message with a listing or order.'),
+        messageMedia: z.array(z.object({
+          mediaUrl: z.string().optional().describe('URL of the media to attach'),
+          mediaType: z.string().optional().describe('MIME type of the media (e.g., "image/jpeg")')
+        })).optional().describe('Optional array of media attachments (max 5 per message)')
+      }).describe('Message details including recipient and content. Must include messageText (required), and either conversationId (for replies) OR otherPartyUsername (for new messages).')
     }
   },
   {
     name: 'ebay_reply_to_message',
     description: 'Reply to a buyer message in an existing conversation thread',
     inputSchema: {
-      type: 'object',
-      properties: {
-        messageId: {
-          type: 'string',
-          description: 'The conversation/message ID to reply to'
-        },
-        messageContent: {
-          type: 'string',
-          description: 'The reply message content'
-        }
-      },
-      required: ['messageId', 'messageContent']
+      messageId: z.string().describe('The conversation/message ID to reply to'),
+      messageContent: z.string().describe('The reply message content')
     }
   },
   // Notification API
   {
     name: 'ebay_get_notification_config',
     description: 'Get notification configuration',
-    inputSchema: {
-      type: 'object',
-      properties: {}
-    }
+    inputSchema: {}
   },
   {
     name: 'ebay_update_notification_config',
     description: 'Update notification configuration',
     inputSchema: {
-      type: 'object',
-      properties: {
-        config: {
-          type: 'object',
-          description: 'Notification configuration settings'
-        }
-      },
-      required: ['config']
+      config: z.record(z.unknown()).describe('Notification configuration settings')
     }
   },
   {
     name: 'ebay_create_notification_destination',
     description: 'Create a notification destination',
     inputSchema: {
-      type: 'object',
-      properties: {
-        destination: {
-          type: 'object',
-          description: 'Destination configuration'
-        }
-      },
-      required: ['destination']
+      destination: z.record(z.unknown()).describe('Destination configuration')
     }
   },
   // Feedback API
@@ -2155,37 +1018,20 @@ export const communicationTools: ToolDefinition[] = [
     name: 'ebay_get_feedback',
     description: 'Get feedback for a transaction',
     inputSchema: {
-      type: 'object',
-      properties: {
-        transactionId: {
-          type: 'string',
-          description: 'The transaction ID'
-        }
-      },
-      required: ['transactionId']
+      transactionId: z.string().describe('The transaction ID')
     }
   },
   {
     name: 'ebay_leave_feedback_for_buyer',
     description: 'Leave feedback for a buyer',
     inputSchema: {
-      type: 'object',
-      properties: {
-        feedbackData: {
-          type: 'object',
-          description: 'Feedback details including rating and comment'
-        }
-      },
-      required: ['feedbackData']
+      feedbackData: z.record(z.unknown()).describe('Feedback details including rating and comment')
     }
   },
   {
     name: 'ebay_get_feedback_summary',
     description: 'Get feedback summary for the seller',
-    inputSchema: {
-      type: 'object',
-      properties: {}
-    }
+    inputSchema: {}
   }
 ];
 
@@ -2194,58 +1040,30 @@ export const otherApiTools: ToolDefinition[] = [
   {
     name: 'ebay_get_user',
     description: 'Get user identity information',
-    inputSchema: {
-      type: 'object',
-      properties: {}
-    }
+    inputSchema: {}
   },
   // Compliance API
   {
     name: 'ebay_get_listing_violations',
     description: 'Get listing violations for the seller',
     inputSchema: {
-      type: 'object',
-      properties: {
-        complianceType: {
-          type: 'string',
-          description: 'Type of compliance violation'
-        },
-        offset: {
-          type: 'number',
-          description: 'Number of violations to skip'
-        },
-        limit: {
-          type: 'number',
-          description: 'Number of violations to return'
-        }
-      }
+      complianceType: z.string().optional().describe('Type of compliance violation'),
+      offset: z.number().optional().describe('Number of violations to skip'),
+      limit: z.number().optional().describe('Number of violations to return')
     }
   },
   {
     name: 'ebay_get_listing_violations_summary',
     description: 'Get summary of listing violations',
     inputSchema: {
-      type: 'object',
-      properties: {
-        complianceType: {
-          type: 'string',
-          description: 'Type of compliance violation'
-        }
-      }
+      complianceType: z.string().optional().describe('Type of compliance violation')
     }
   },
   {
     name: 'ebay_suppress_violation',
     description: 'Suppress a listing violation',
     inputSchema: {
-      type: 'object',
-      properties: {
-        listingViolationId: {
-          type: 'string',
-          description: 'The violation ID to suppress'
-        }
-      },
-      required: ['listingViolationId']
+      listingViolationId: z.string().describe('The violation ID to suppress')
     }
   },
   // VERO API
@@ -2253,35 +1071,16 @@ export const otherApiTools: ToolDefinition[] = [
     name: 'ebay_report_infringement',
     description: 'Report intellectual property infringement',
     inputSchema: {
-      type: 'object',
-      properties: {
-        infringementData: {
-          type: 'object',
-          description: 'Infringement report details'
-        }
-      },
-      required: ['infringementData']
+      infringementData: z.record(z.unknown()).describe('Infringement report details')
     }
   },
   {
     name: 'ebay_get_reported_items',
     description: 'Get reported items',
     inputSchema: {
-      type: 'object',
-      properties: {
-        filter: {
-          type: 'string',
-          description: 'Filter criteria'
-        },
-        limit: {
-          type: 'number',
-          description: 'Number of items to return'
-        },
-        offset: {
-          type: 'number',
-          description: 'Number of items to skip'
-        }
-      }
+      filter: z.string().optional().describe('Filter criteria'),
+      limit: z.number().optional().describe('Number of items to return'),
+      offset: z.number().optional().describe('Number of items to skip')
     }
   },
   // Translation API
@@ -2289,27 +1088,10 @@ export const otherApiTools: ToolDefinition[] = [
     name: 'ebay_translate',
     description: 'Translate listing text',
     inputSchema: {
-      type: 'object',
-      properties: {
-        from: {
-          type: 'string',
-          description: 'Source language code'
-        },
-        to: {
-          type: 'string',
-          description: 'Target language code'
-        },
-        translationContext: {
-          type: 'string',
-          description: 'Translation context (e.g., ITEM_TITLE, ITEM_DESCRIPTION)'
-        },
-        text: {
-          type: 'array',
-          items: { type: 'string' },
-          description: 'Array of text to translate'
-        }
-      },
-      required: ['from', 'to', 'translationContext', 'text']
+      from: z.string().describe('Source language code'),
+      to: z.string().describe('Target language code'),
+      translationContext: z.string().describe('Translation context (e.g., ITEM_TITLE, ITEM_DESCRIPTION)'),
+      text: z.array(z.string()).describe('Array of text to translate')
     }
   },
   // eDelivery API
@@ -2317,28 +1099,14 @@ export const otherApiTools: ToolDefinition[] = [
     name: 'ebay_create_shipping_quote',
     description: 'Create a shipping quote for international shipping',
     inputSchema: {
-      type: 'object',
-      properties: {
-        shippingQuoteRequest: {
-          type: 'object',
-          description: 'Shipping quote request details'
-        }
-      },
-      required: ['shippingQuoteRequest']
+      shippingQuoteRequest: z.record(z.unknown()).describe('Shipping quote request details')
     }
   },
   {
     name: 'ebay_get_shipping_quote',
     description: 'Get a shipping quote by ID',
     inputSchema: {
-      type: 'object',
-      properties: {
-        shippingQuoteId: {
-          type: 'string',
-          description: 'The shipping quote ID'
-        }
-      },
-      required: ['shippingQuoteId']
+      shippingQuoteId: z.string().describe('The shipping quote ID')
     }
   }
 ];
@@ -2348,16 +1116,7 @@ export const claudeTools: ToolDefinition[] = [
     name: "SearchClaudeCodeDocs",
     description: "Search across the Claude Code Docs knowledge base to find relevant information, code examples, API references, and guides. Use this tool when you need to answer questions about Claude Code Docs, find specific documentation, understand how features work, or locate implementation details. The search returns contextual content with titles and direct links to the documentation pages.",
     inputSchema: {
-      type: "object",
-      properties: {
-        query: {
-          type: "string",
-          description: "A query to search the content with."
-        }
-      },
-      required: [
-        "query"
-      ]
+      query: z.string().describe("A query to search the content with.")
     }
   }
 ];

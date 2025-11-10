@@ -1,6 +1,8 @@
 # Zod Schemas for Tool Input Validation
 
-This directory contains Zod schemas for validating the inputs of the MCP tools. The schemas are organized in subdirectories that mirror the structure of the `src/api` directory.
+This directory (`src/utils/`) contains Zod schemas for validating the inputs of the MCP tools. The schemas are organized in subdirectories that mirror the structure of the `src/api/` directory.
+
+**Location:** `/Applications/Github/ebay-api-mcp-server/src/utils/`
 
 ## Workflow for Creating Zod Schemas
 
@@ -14,13 +16,13 @@ Find the API implementation file in the `src/api` directory that contains the to
 
 ### 2. Locate the OpenAPI TypeScript Types
 
-In the `src/types` directory, find the corresponding OpenAPI type definition file. The file names follow the pattern `{api_name}_v{version}_oas3.ts`.
+In the `src/types/` directory, find the corresponding OpenAPI type definition file. The file names follow the pattern `{api_name}_v{version}_oas3.ts`.
 
-**Examples:**
-- Feedback API → `src/types/commerce_feedback_v1_beta_oas3.ts`
-- Message API → `src/types/commerce_message_v1_oas3.ts`
-- Negotiation API → `src/types/sell_negotiation_v1_oas3.ts`
-- Notification API → `src/types/commerce_notification_v1_oas3.ts`
+**Full paths:**
+- Feedback API → `/Applications/Github/ebay-api-mcp-server/src/types/commerce_feedback_v1_beta_oas3.ts`
+- Message API → `/Applications/Github/ebay-api-mcp-server/src/types/commerce_message_v1_oas3.ts`
+- Negotiation API → `/Applications/Github/ebay-api-mcp-server/src/types/sell_negotiation_v1_oas3.ts`
+- Notification API → `/Applications/Github/ebay-api-mcp-server/src/types/commerce_notification_v1_oas3.ts`
 
 ### 3. Import the OpenAPI Types
 
@@ -119,7 +121,7 @@ For each field, provide comprehensive validation:
 
 ### 8. Update Tool Dispatcher
 
-In `src/tools/index.ts`:
+In `/Applications/Github/ebay-api-mcp-server/src/tools/index.ts`:
 
 1. Import your Zod schemas:
 ```typescript
@@ -130,7 +132,7 @@ import {
 } from "../utils/communication/feedback.js";
 ```
 
-2. Add validation to tool cases:
+2. Add validation to tool cases in the `executeTool()` function:
 ```typescript
 case "ebay_get_feedback": {
   const validated = getFeedbackSchema.parse(args);
@@ -156,7 +158,7 @@ Expected warnings:
 
 ### Complete Example
 
-See `src/utils/communication/feedback.ts` for a complete reference implementation showing:
+See `/Applications/Github/ebay-api-mcp-server/src/utils/communication/feedback.ts` for a complete reference implementation showing:
 - Proper OpenAPI type imports
 - Type reference documentation
 - Reusable schema components

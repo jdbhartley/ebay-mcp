@@ -281,13 +281,69 @@ npm run build
 ## Project Structure
 
 ```
-src/
-├── api/                          # eBay API client implementations
-├── auth/                         # OAuth authentication
-├── config/                       # Configuration management
-├── tools/                        # MCP tool definitions
-├── types/                        # TypeScript type definitions
-└── index.ts                      # MCP server entrypoint
+ebay-api-mcp-server/
+├── src/
+│   ├── api/                          # eBay API client implementations
+│   │   ├── account-management/       # Account API
+│   │   ├── analytics-and-report/    # Analytics API
+│   │   ├── communication/            # Feedback, Message, Negotiation, Notification APIs
+│   │   ├── listing-management/       # Inventory API
+│   │   ├── listing-metadata/         # Metadata & Taxonomy APIs
+│   │   ├── marketing-and-promotions/ # Marketing & Recommendation APIs
+│   │   ├── order-management/         # Fulfillment & Dispute APIs
+│   │   ├── other/                    # Compliance, Identity, VERO, Translation, eDelivery
+│   │   ├── client.ts                 # HTTP client with OAuth integration
+│   │   └── index.ts                  # API facade (EbaySellerApi)
+│   ├── auth/                         # OAuth 2.0 authentication
+│   │   ├── oauth.ts                  # OAuth client with token management
+│   │   ├── oauth-metadata.ts         # OAuth discovery metadata
+│   │   ├── oauth-middleware.ts       # Express OAuth middleware
+│   │   ├── oauth-types.ts            # OAuth type definitions
+│   │   ├── token-storage.ts          # File-based token persistence
+│   │   └── token-verifier.ts         # JWT token verification
+│   ├── config/
+│   │   └── environment.ts            # Environment configuration
+│   ├── tools/                        # MCP tool definitions
+│   │   ├── index.ts                  # Tool dispatcher (executeTool)
+│   │   ├── token-template.ts         # Token template generator
+│   │   └── tool-definitions.ts       # All 170 tool definitions (Zod schemas)
+│   ├── types/                        # TypeScript type definitions
+│   │   ├── commerce_*.ts             # Commerce API OpenAPI types
+│   │   ├── sell_*.ts                 # Sell API OpenAPI types
+│   │   └── ebay.ts                   # Core eBay types
+│   ├── utils/                        # Zod validation schemas
+│   │   ├── account-management/       # Account API schemas
+│   │   ├── analytics-and-report/    # Analytics API schemas
+│   │   ├── communication/            # Communication API schemas
+│   │   ├── listing-management/       # Inventory API schemas
+│   │   ├── listing-metadata/         # Metadata API schemas
+│   │   ├── marketing-and-promotions/ # Marketing API schemas
+│   │   ├── order-management/         # Order API schemas
+│   │   ├── other/                    # Other API schemas
+│   │   └── README.md                 # Zod schema documentation
+│   ├── index.ts                      # STDIO MCP server entrypoint
+│   └── server-http.ts                # HTTP MCP server with OAuth
+├── docs/
+│   ├── auth/                         # Authentication documentation
+│   │   ├── manual-token-config.md   # Manual token setup guide
+│   │   └── oauth_custom.json         # Custom OAuth configuration
+│   ├── buy-apps/                     # Buy APIs (coming soon)
+│   ├── sell-apps/                    # OpenAPI specifications
+│   │   ├── account-management/
+│   │   ├── analytics-and-report/
+│   │   ├── communication/
+│   │   ├── listing-management/
+│   │   ├── listing-metadata/
+│   │   ├── markeitng-and-promotions/
+│   │   ├── order-management/
+│   │   └── other-apis/
+│   └── README.md                     # API documentation index
+├── build/                            # Compiled JavaScript output
+├── .env                              # Environment configuration
+├── CLAUDE.md                         # Claude-specific instructions
+├── GEMINI.md                         # Gemini-specific instructions
+├── OAUTH-SETUP.md                    # OAuth setup guide
+└── README.md                         # This file
 ```
 
 ## Resources

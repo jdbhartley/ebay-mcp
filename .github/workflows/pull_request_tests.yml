@@ -1,4 +1,4 @@
-name: Pull request unit tests
+name: Pull Request Tests
 
 on:
   pull_request:
@@ -7,6 +7,7 @@ on:
 
 jobs:
   test:
+    name: Test on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -19,7 +20,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20" # Use Node.js 18 as specified in GEMINI.md
+          node-version: "20" # Use Node.js 20 LTS
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v3

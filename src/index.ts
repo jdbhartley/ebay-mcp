@@ -2,9 +2,9 @@
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { EbaySellerApi } from "./api/index.js";
-import { getEbayConfig, validateEnvironmentConfig } from "./config/environment.js";
-import { getToolDefinitions, executeTool } from "./tools/index.js";
+import { EbaySellerApi } from "@/api/index.js";
+import { getEbayConfig, validateEnvironmentConfig } from "@/config/environment.js";
+import { getToolDefinitions, executeTool } from "@/tools/index.js";
 
 
 /**

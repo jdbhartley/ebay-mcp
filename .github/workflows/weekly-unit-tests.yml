@@ -1,4 +1,4 @@
-name: Weekly unit tests
+name: Weekly Unit Tests
 
 on:
   workflow_dispatch: # Manual trigger
@@ -7,16 +7,24 @@ on:
     - cron: "0 0 * * 0"
 
 jobs:
-  run_tests:
+  test:
+    name: Run unit tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+          run_install: false
+
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20" # Use a recent LTS version
+          node-version: "20" # Use Node.js 20 LTS
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile

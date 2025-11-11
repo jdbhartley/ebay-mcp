@@ -1,7 +1,7 @@
 import axios, { type AxiosInstance, type AxiosRequestConfig, type AxiosError } from "axios";
-import { EbayOAuthClient } from "../auth/oauth.js";
-import { getBaseUrl } from "../config/environment.js";
-import type { EbayApiError, EbayConfig } from "../types/ebay.js";
+import { EbayOAuthClient } from "@/auth/oauth.js";
+import { getBaseUrl } from "@/config/environment.js";
+import type { EbayApiError, EbayConfig } from "@/types/ebay.js";
 
 /**
  * Rate limit tracking

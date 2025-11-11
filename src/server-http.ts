@@ -16,15 +16,15 @@ import { randomUUID } from "crypto";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { isInitializeRequest } from "@modelcontextprotocol/sdk/types.js";
-import { EbaySellerApi } from "./api/index.js";
-import { getEbayConfig, getDefaultScopes, validateEnvironmentConfig } from "./config/environment.js";
-import { getToolDefinitions, executeTool } from "./tools/index.js";
-import { TokenVerifier } from "./auth/token-verifier.js";
-import { createBearerAuthMiddleware } from "./auth/oauth-middleware.js";
+import { EbaySellerApi } from "@/api/index.js";
+import { getEbayConfig, getDefaultScopes, validateEnvironmentConfig } from "@/config/environment.js";
+import { getToolDefinitions, executeTool } from "@/tools/index.js";
+import { TokenVerifier } from "@/auth/token-verifier.js";
+import { createBearerAuthMiddleware } from "@/auth/oauth-middleware.js";
 import {
   createMetadataRouter,
   getProtectedResourceMetadataUrl,
-} from "./auth/oauth-metadata.js";
+} from "@/auth/oauth-metadata.js";
 
 // Configuration from environment
 const CONFIG = {

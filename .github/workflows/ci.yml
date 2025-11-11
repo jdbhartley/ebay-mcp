@@ -1,4 +1,4 @@
-name: Unit tests
+name: CI with Coverage
 
 on:
   push:
@@ -7,14 +7,16 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  test-with-coverage:
+    name: Test with coverage on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v3
@@ -22,10 +24,10 @@ jobs:
           version: 8
           run_install: false
 
-      - name: Set up Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20" # Or a version compatible with your project, e.g., '20'
+          node-version: "20" # Use Node.js 20 LTS
           cache: "pnpm"
 
       - name: Install dependencies

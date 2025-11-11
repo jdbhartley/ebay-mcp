@@ -292,7 +292,6 @@ describe("MarketingApi", () => {
           ad_status: "ACTIVE",
           limit: 10,
           listing_ids: "listing-001",
-          offset: 0,
         }
       );
     });
@@ -466,7 +465,6 @@ describe("MarketingApi", () => {
         {
           ad_group_status: "ACTIVE",
           limit: 10,
-          offset: 0,
         }
       );
     });
@@ -582,7 +580,6 @@ describe("MarketingApi", () => {
         {
           keyword_status: "ACTIVE",
           limit: 10,
-          offset: 0,
         }
       );
     });
@@ -785,7 +782,7 @@ describe("MarketingApi", () => {
 
       expect(mockClient.get).toHaveBeenCalledWith(
         "/sell/marketing/v1/ad_group/adgroup-001/negative_keyword",
-        { limit: 10, offset: 0 }
+        { limit: 10 }
       );
       expect(result).toEqual(mockResponse);
     });
@@ -1105,7 +1102,6 @@ describe("MarketingApi", () => {
         {
           report_task_statuses: "SUCCESS",
           limit: 10,
-          offset: 0,
         }
       );
     });

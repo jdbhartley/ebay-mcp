@@ -3,7 +3,7 @@ name: Weekly Dependency Updates
 on:
   schedule:
     # Runs at 00:00 UTC every Monday
-    - cron: '0 0 * * 1'
+    - cron: "0 0 * * 1"
   workflow_dispatch: # Allows manual triggering
 
 jobs:
@@ -69,7 +69,7 @@ jobs:
 
           # Use GitHub CLI to create the PR. Ensure GH CLI is installed in the runner.
           # The GITHUB_TOKEN secret is automatically provided by GitHub Actions.
-          gh pr create --base main --head $BRANCH_NAME --title "Weekly Dependency Updates" --body "Automated dependency updates." --label "dependencies" --assignee "@me"
+          gh pr create --base main --head $BRANCH_NAME --title "Weekly Dependency Updates" --body "Automated dependency updates." --label "dependencies"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Required for gh cli and pushing to repo
           CI: true

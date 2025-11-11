@@ -154,9 +154,9 @@ describe('Comprehensive Tools Coverage', () => {
         replyToMessage: vi.fn()
       },
       notification: {
-        getNotificationConfig: vi.fn(),
-        updateNotificationConfig: vi.fn(),
-        createNotificationDestination: vi.fn()
+        getConfig: vi.fn(),
+        updateConfig: vi.fn(),
+        createDestination: vi.fn()
       },
       feedback: {
         getFeedback: vi.fn(),
@@ -1293,17 +1293,24 @@ describe('Comprehensive Tools Coverage', () => {
 
     it('ebay_update_notification_config', async () => {
       vi.mocked(mockApi.notification.updateConfig).mockResolvedValue(undefined);
-      const config = { deliveryConfigs: [] };
-      await executeTool(mockApi, 'ebay_update_notification_config', { config });
-      expect(mockApi.notification.updateConfig).toHaveBeenCalledWith(config);
+      const args = { alert_email: 'test@example.com' };
+      await executeTool(mockApi, 'ebay_update_notification_config', args);
+      expect(mockApi.notification.updateConfig).toHaveBeenCalledWith(args);
     });
 
     it('ebay_create_notification_destination', async () => {
       const mockResponse = { destinationId: 'DEST123' };
-      const destination = { name: 'Test', endpoint: 'https://example.com' };
+      const args = {
+        name: 'Test Destination',
+        delivery_config: {
+          endpoint: 'https://example.com/webhook',
+          verification_token: 'abcdef1234567890abcdef1234567890'
+        },
+        status: 'ENABLED'
+      };
       vi.mocked(mockApi.notification.createDestination).mockResolvedValue(mockResponse);
-      await executeTool(mockApi, 'ebay_create_notification_destination', { destination });
-      expect(mockApi.notification.createDestination).toHaveBeenCalledWith(destination);
+      await executeTool(mockApi, 'ebay_create_notification_destination', args);
+      expect(mockApi.notification.createDestination).toHaveBeenCalledWith(args);
     });
   });
 
@@ -1312,22 +1319,31 @@ describe('Comprehensive Tools Coverage', () => {
       const mockResponse = { feedbackId: 'FEEDBACK123' };
       vi.mocked(mockApi.feedback.getFeedback).mockResolvedValue(mockResponse);
       await executeTool(mockApi, 'ebay_get_feedback', {
-        transactionId: 'TRANS123'
+        user_id: 'USER123',
+        feedback_type: 'POSITIVE',
+        transaction_id: 'TRANS123'
       });
       expect(mockApi.feedback.getFeedback).toHaveBeenCalledWith('TRANS123');
     });
 
     it('ebay_leave_feedback_for_buyer', async () => {
       vi.mocked(mockApi.feedback.leaveFeedbackForBuyer).mockResolvedValue(undefined);
-      const feedbackData = { orderLineItemId: 'ITEM123', rating: 'POSITIVE' };
-      await executeTool(mockApi, 'ebay_leave_feedback_for_buyer', { feedbackData });
-      expect(mockApi.feedback.leaveFeedbackForBuyer).toHaveBeenCalledWith(feedbackData);
+      const args = {
+        listing_id: 'LISTING123',
+        comment_text: 'Great buyer!',
+        comment_type: 'POSITIVE'
+      };
+      await executeTool(mockApi, 'ebay_leave_feedback_for_buyer', args);
+      expect(mockApi.feedback.leaveFeedbackForBuyer).toHaveBeenCalledWith(args);
     });
 
     it('ebay_get_feedback_summary', async () => {
       const mockResponse = { feedbackScore: 100 };
       vi.mocked(mockApi.feedback.getFeedbackSummary).mockResolvedValue(mockResponse);
-      await executeTool(mockApi, 'ebay_get_feedback_summary', {});
+      await executeTool(mockApi, 'ebay_get_feedback_summary', {
+        user_id: 'USER123',
+        filter: 'ratingType:{POSITIVE}'
+      });
       expect(mockApi.feedback.getFeedbackSummary).toHaveBeenCalled();
     });
   });

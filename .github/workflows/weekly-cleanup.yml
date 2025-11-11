@@ -47,11 +47,8 @@ jobs:
             && sudo apt install gh -y
           }
 
-      - name: Authenticate GitHub CLI
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Use the default token provided by Actions
-        run: |
-          echo "$GITHUB_TOKEN" | gh auth login --with-token
+      # Removed the 'Authenticate GitHub CLI' step as it was causing an error.
+      # The GITHUB_TOKEN is automatically available and should be used by gh commands.
 
       - name: Delete old workflow runs
         env:
@@ -80,8 +77,8 @@ jobs:
             created_timestamp=$(date -u -d "$created_at" +%s)
 
             # Calculate age in days
-            age_seconds=$((CURRENT_TIME - created_timestamp))
-            age_days=$((age_seconds / 86400)) # 86400 seconds in a day
+            age_seconds=$((CURRENT_TIME - created_timestamp)) # 86400 seconds in a day
+            age_days=$((age_seconds / 86400))
 
             echo "Processing run ID: $run_id, Created: $created_at (Age: $age_days days)"
 

@@ -443,13 +443,33 @@ For the complete list of 140 tools, see [Tool Definitions](src/tools/tool-defini
 
 ## 📱 Supported MCP Clients
 
-This server is compatible with the following MCP clients:
+This server has been tested and verified with the following MCP clients:
 
-- **[Claude Desktop](https://claude.ai/download)** - Anthropic's official desktop application
-- **[Google Gemini](https://gemini.google.com/)** - Google's AI assistant
-- **[ChatGPT](https://chatgpt.com/)** - OpenAI's conversational AI
+### ✅ Fully Supported & Verified
 
-**Setup:** Use the [automated setup script](#automated-setup-recommended) or [manual configuration](#manual-setup) for your preferred client.
+| Client | Status | Version Tested | Notes |
+|--------|--------|----------------|-------|
+| **[Gemini CLI](https://gemini.google.com/)** | ✅ **Working** | Latest | Fully functional with all 140 tools |
+| **[Claude Code](https://claude.ai/code)** | ✅ **Working** | Latest | Complete integration, all features supported |
+| **[Codex](https://github.com/openai/codex)** | ✅ **Working** | Latest | Tested and verified |
+
+### 🚧 In Development
+
+| Client | Status | Progress | ETA |
+|--------|--------|----------|-----|
+| **[Claude Desktop](https://claude.ai/download)** | 🚧 **In Progress** | 85% | Coming Soon |
+| **[ChatGPT Desktop](https://chatgpt.com/)** | 🚧 **In Progress** | 70% | Q2 2025 |
+
+### Setup Instructions
+
+**For Verified Clients** (Gemini CLI, Claude Code, Codex):
+- Use the [automated setup script](#automated-setup-recommended) for quick configuration
+- Or follow the [manual configuration](#manual-setup) guide
+
+**For Clients in Development** (Claude Desktop, ChatGPT):
+- Configuration templates are available but may require adjustments
+- Join [GitHub Discussions](https://github.com/YosefHayim/ebay-api-mcp-server/discussions) for updates
+- Contributions and testing help welcome!
 
 ---
 

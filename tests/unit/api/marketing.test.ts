@@ -1336,7 +1336,7 @@ describe("MarketingApi", () => {
       );
 
       expect(mockClient.post).toHaveBeenCalledWith(
-        "/sell/marketing/v1/ad_group/adgroup-001/bulk_create_negative_keyword",
+        "/sell/marketing/v1/ad_group/adgroup-001/bulk_create_negative_keywords",
         bulkRequest
       );
       expect(result).toEqual(mockResponse);
@@ -1359,7 +1359,7 @@ describe("MarketingApi", () => {
       );
 
       expect(mockClient.post).toHaveBeenCalledWith(
-        "/sell/marketing/v1/ad_group/adgroup-001/bulk_delete_negative_keyword",
+        "/sell/marketing/v1/ad_group/adgroup-001/bulk_delete_negative_keywords",
         bulkRequest
       );
       expect(result).toEqual(mockResponse);
@@ -1387,7 +1387,7 @@ describe("MarketingApi", () => {
       );
 
       expect(mockClient.post).toHaveBeenCalledWith(
-        "/sell/marketing/v1/ad_group/adgroup-001/bulk_update_negative_keyword",
+        "/sell/marketing/v1/ad_group/adgroup-001/bulk_update_negative_keywords",
         bulkRequest
       );
       expect(result).toEqual(mockResponse);

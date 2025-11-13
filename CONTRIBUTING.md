@@ -336,7 +336,7 @@ npm run test:ui
 
 - **GitHub Issues** - Ask questions or report problems
 - **Discussions** - Share ideas and discuss features
-- **Documentation** - Check README.md, CLAUDE.md, and other docs
+- **Documentation** - Check README.md and other docs
 
 ### Recognition
 

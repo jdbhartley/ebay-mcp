@@ -134,18 +134,43 @@ Get up and running in **3 simple steps** (< 2 minutes):
 2. Create an application in [Developer Portal](https://developer.ebay.com/my/keys)
 3. Copy your **Client ID** and **Client Secret**
 
-### Step 2: Clone & Configure
+### Step 2: Clone & Install
 
 ```bash
 # Clone the repository
 git clone https://github.com/YosefHayim/ebay-api-mcp-server.git
 cd ebay-api-mcp-server
 
+# Install dependencies
+npm install
+```
+
+### Step 3: Interactive Setup ✨ NEW!
+
+Run the beautiful interactive setup wizard:
+
+```bash
+npm run setup
+```
+
+The wizard will guide you through:
+- 🎨 **Beautiful eBay logo** and colored interface
+- 📝 **Step-by-step prompts** for credentials and tokens
+- ✅ **Input validation** to catch errors early
+- 🔄 **Reconfigure anytime** by running the command again
+- 🚀 **Auto-detection** of MCP clients
+- 💾 **Automatic .env creation** with proper formatting
+
+**Alternative: Manual Setup**
+
+If you prefer manual configuration:
+
+```bash
 # Copy and edit the environment file
 cp .env.example .env
 ```
 
-Edit `.env` with your credentials (only 4 values needed):
+Edit `.env` with your credentials:
 
 ```bash
 EBAY_CLIENT_ID=your_client_id_here
@@ -154,14 +179,13 @@ EBAY_ENVIRONMENT=sandbox  # or "production"
 EBAY_REDIRECT_URI=your_runame_here
 ```
 
-### Step 3: Install & Auto-Configure
+Then run auto-setup to configure MCP clients:
 
 ```bash
-# Install dependencies (auto-configures all MCP clients!)
-npm install
+npm run auto-setup
 ```
 
-**That's it!** 🎉 The installation will automatically:
+**That's it!** 🎉 The setup will automatically:
 - ✅ Build the project
 - ✅ Detect installed MCP clients (Claude Desktop, Gemini, ChatGPT)
 - ✅ Generate MCP client configurations
@@ -173,17 +197,37 @@ npm install
 2. **Verify connection** in MCP client settings/logs
 3. **Test it:** Ask your AI assistant "List my eBay inventory items"
 
-> **Pro Tip:** For high rate limits (10k-50k req/day), add `EBAY_USER_REFRESH_TOKEN` to your `.env` file. See [OAuth Setup](#-oauth-setup) for details.
+> **Pro Tip:** For high rate limits (10k-50k req/day), add `EBAY_USER_REFRESH_TOKEN` to your `.env` file. The interactive setup wizard makes this easy! See [OAuth Setup](#-oauth-setup) for details.
 
 ---
 
 ## ⚙️ Configuration
 
-### ✨ New: Automatic Setup (Recommended)
+### ✨ Interactive Setup Wizard (Recommended)
 
-**Zero configuration needed!** The server automatically detects and configures all MCP clients when you run `npm install`.
+**The easiest way to configure!** Run the interactive setup wizard:
 
-Just edit `.env` with your eBay credentials - that's it!
+```bash
+npm run setup
+```
+
+Features a beautiful CLI interface with:
+- 🎨 Colorful eBay-branded logo
+- 📝 Step-by-step guided prompts
+- ✅ Real-time input validation
+- 🔄 Easy reconfiguration anytime
+- 💾 Automatic .env file generation
+- 🚀 Optional MCP client auto-configuration
+
+### Automatic Setup (Alternative)
+
+**Quick configuration from existing .env!** The server automatically detects and configures all MCP clients when you run `npm install`.
+
+Just edit `.env` with your eBay credentials and run:
+
+```bash
+npm run auto-setup
+```
 
 ### Legacy: Manual Configuration (Advanced Users Only)
 
@@ -451,15 +495,13 @@ This server has been tested and verified with the following MCP clients:
 
 ### Getting Started
 - [Quick Start Guide](#quick-start) - Get up and running in 5 minutes
+- [Interactive Setup Guide](docs/INTERACTIVE_SETUP.md) - Detailed wizard walkthrough
 - [Authentication Guide](docs/auth/README.md) - OAuth scopes and token management
-- [OAuth 2.1 Setup for Cloudflare Workers](docs/OAUTH_SETUP.md) - Secure remote deployment with OAuth
 
 ### Development
 - [Contributing Guide](CONTRIBUTING.md) - How to contribute to this project
 - [Security Policy](SECURITY.md) - Vulnerability reporting and security best practices
 - [API Documentation](docs/) - OpenAPI specifications for all eBay APIs
-- [Enum Types Documentation](docs/ENUMS_ANALYSIS.md) - Comprehensive enum catalog and migration guide
-- [Scripts Documentation](scripts/README.md) - Build and setup scripts
 - [Changelog](CHANGELOG.md) - Version history and release notes
 
 ### Resources
@@ -560,6 +602,31 @@ npm run generate:types   # Generate TypeScript types from OpenAPI specs
 ```bash
 npm run test
 ```
+
+### Endpoint Testing
+
+Test all eBay API endpoints to verify which ones are working and which are failing:
+
+```bash
+npm run test:endpoints
+```
+
+This command will:
+- Test all 230+ endpoints across 9 API categories
+- Generate detailed logs in `logs/endpoint-tests/<timestamp>/`
+- Create a summary report showing passed/failed/skipped endpoints
+- Identify authentication and permission issues
+
+**Output:**
+- `summary.log` - Human-readable test summary
+- `summary.json` - Machine-readable results
+- Category-specific logs (e.g., `account-management.log`, `inventory.log`)
+
+**Use cases:**
+- ✅ Verify API endpoint functionality before using with LLMs
+- 🐛 Debug authentication and permission issues
+- 📊 Identify which endpoints have data available
+- 🔍 Test in sandbox/production environments safely
 
 ### Integration Tests
 

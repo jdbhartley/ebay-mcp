@@ -7,6 +7,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Interactive Setup Wizard**: Beautiful CLI tool for easy configuration
+  - eBay-branded ASCII logo with brand colors (red, blue, yellow, green)
+  - Step-by-step guided prompts for all credentials and tokens
+  - Real-time input validation with helpful error messages
+  - Configuration review before saving
+  - Reconfiguration support with pre-filled values
+  - MCP client auto-detection and optional auto-setup
+  - Comprehensive documentation in `docs/INTERACTIVE_SETUP.md`
+  - New npm script: `npm run setup`
+
+### Changed
+- **Documentation Cleanup**: Removed non-standard markdown files following open source best practices
+  - Removed `CLAUDE.md` (internal development guide)
+  - Removed `docs/AUTO-SETUP.md` (redundant with INTERACTIVE_SETUP.md)
+  - Removed `docs/ENUMS_ANALYSIS.md` (too technical/internal)
+  - Removed `docs/OAUTH_SETUP.md` (consolidated into main README)
+  - Removed `docs/README.md` (redundant)
+  - Removed `scripts/ENDPOINT_TESTING.md` (internal development)
+  - Removed `scripts/README.md` (internal development)
+  - Removed `tests/README.md` (internal development)
+- **README.md Updates**:
+  - Reorganized Quick Start to feature interactive setup wizard prominently
+  - Consolidated OAuth setup instructions directly in main README
+  - Updated documentation links to remove deleted files
+  - Added link to Interactive Setup Guide in documentation section
+
+### Dependencies
+- Added `chalk@^5.6.2` for terminal styling
+- Added `prompts@^2.4.2` for interactive CLI prompts
+- Added `@types/prompts@^2.4.9` for TypeScript types
+
 ## [1.2.3] - 2025-01-13
 
 ### Changed

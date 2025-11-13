@@ -234,7 +234,7 @@ export async function executeTool(
 
     case 'ebay_clear_tokens': {
       const authClient = api.getAuthClient().getOAuthClient();
-      await authClient.clearAllTokens();
+      authClient.clearAllTokens();
 
       return {
         success: true,
@@ -391,27 +391,27 @@ export async function executeTool(
             : 'Not available',
           accessTokenExpiry: internalTokens?.userAccessTokenExpiry
             ? {
-                timestamp: internalTokens.userAccessTokenExpiry,
-                date: new Date(internalTokens.userAccessTokenExpiry).toISOString(),
-                expired: Date.now() >= internalTokens.userAccessTokenExpiry,
-              }
+              timestamp: internalTokens.userAccessTokenExpiry,
+              date: new Date(internalTokens.userAccessTokenExpiry).toISOString(),
+              expired: Date.now() >= internalTokens.userAccessTokenExpiry,
+            }
             : 'Not available',
           refreshTokenExpiry: internalTokens?.userRefreshTokenExpiry
             ? {
-                timestamp: internalTokens.userRefreshTokenExpiry,
-                date: new Date(internalTokens.userRefreshTokenExpiry).toISOString(),
-                expired: Date.now() >= internalTokens.userRefreshTokenExpiry,
-              }
+              timestamp: internalTokens.userRefreshTokenExpiry,
+              date: new Date(internalTokens.userRefreshTokenExpiry).toISOString(),
+              expired: Date.now() >= internalTokens.userRefreshTokenExpiry,
+            }
             : 'Not available',
           appToken: (authClient as any).appAccessToken
             ? maskToken((authClient as any).appAccessToken)
             : 'Not cached',
           appTokenExpiry: (authClient as any).appAccessTokenExpiry
             ? {
-                timestamp: (authClient as any).appAccessTokenExpiry,
-                date: new Date((authClient as any).appAccessTokenExpiry).toISOString(),
-                expired: Date.now() >= (authClient as any).appAccessTokenExpiry,
-              }
+              timestamp: (authClient as any).appAccessTokenExpiry,
+              date: new Date((authClient as any).appAccessTokenExpiry).toISOString(),
+              expired: Date.now() >= (authClient as any).appAccessTokenExpiry,
+            }
             : 'Not available',
         },
         status: {
@@ -453,12 +453,12 @@ export async function executeTool(
             : 'Not available',
           accessTokenExpiry: internalTokens?.userAccessTokenExpiry
             ? {
-                timestamp: internalTokens.userAccessTokenExpiry,
-                date: new Date(internalTokens.userAccessTokenExpiry).toISOString(),
-                expiresInSeconds: Math.floor(
-                  (internalTokens.userAccessTokenExpiry - Date.now()) / 1000
-                ),
-              }
+              timestamp: internalTokens.userAccessTokenExpiry,
+              date: new Date(internalTokens.userAccessTokenExpiry).toISOString(),
+              expiresInSeconds: Math.floor(
+                (internalTokens.userAccessTokenExpiry - Date.now()) / 1000
+              ),
+            }
             : 'Not available',
           tokenInfo: api.getTokenInfo(),
         };

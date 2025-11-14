@@ -104,50 +104,12 @@ const CREATOR_CREDIT = `
 `;
 
 const OAUTH_SETUP_INFO = `
-${chalk.bold.yellow('IMPORTANT: OAuth Setup Requirements')}
-
 This is a local MCP server. eBay OAuth requires HTTPS redirect URIs.
-
-${chalk.bold.white('Setup Options:')}
-
-  ${ebayColors.green('1. App Token Only')} (Quick Start)
-     - No OAuth needed
-     - Limited to app-level operations
-     - Good for testing and exploration
-
-  ${ebayColors.blue('2. Full User Access')} (Recommended)
-     - Requires OAuth setup (one-time)
-     - Complete access to all APIs
-     - All operations available
-
-${chalk.bold.white('OAuth Setup Steps:')}
-  1. Run this setup wizard
-  2. Use ebay_get_oauth_url tool
-  3. Authorize in browser
-  4. Extract refresh token from callback
-  5. Add token to configuration
-
 ${chalk.gray('─'.repeat(70))}
 `;
 
 const WELCOME_MESSAGE = `
 ${chalk.bold.white('eBay API MCP Server Configuration')}
-
-${chalk.bold.white('Required Credentials:')}
-  - eBay Client ID
-  - eBay Client Secret
-  - Redirect URI (RuName)
-
-${chalk.bold.white('Optional:')}
-  - User Refresh Token (for user-specific operations)
-
-${chalk.bold.white('This wizard will:')}
-  - Configure your credentials
-  - Detect and setup LLM clients
-  - Validate configuration
-  - Verify API connectivity
-
-${chalk.gray('─'.repeat(70))}
 `;
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -403,7 +365,7 @@ async function runInteractiveSetup() {
   const hasExisting = Object.keys(existingConfig).length > 0;
 
   if (hasExisting) {
-    console.log(chalk.cyan('ℹ️  Found existing configuration.\n'));
+    console.log(chalk.cyan('Found existing configuration.\n'));
   }
 
   // Collect configuration
@@ -447,7 +409,7 @@ async function runInteractiveSetup() {
       validate: validateToken,
       format: (value: string) => {
         // Auto-strip quotes if user pastes token with quotes
-        return value.trim().replace(/^["']|["']$/g, '');
+        return value.trim().replace(/^|$/g, '');
       },
     },
   ]);

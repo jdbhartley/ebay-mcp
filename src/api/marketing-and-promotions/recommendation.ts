@@ -1,5 +1,5 @@
 import type { EbayApiClient } from '@/api/client.js';
-import type { components } from '@/types/sell_recommendation_v1_oas3.js';
+import type { components } from '@/types/sell-apps/markeitng-and-promotions/sellRecommendationV1Oas3.js';
 
 type PagedListingRecommendationCollection =
   components['schemas']['PagedListingRecommendationCollection'];
@@ -11,7 +11,7 @@ type PagedListingRecommendationCollection =
 export class RecommendationApi {
   private readonly basePath = '/sell/recommendation/v1';
 
-  constructor(private client: EbayApiClient) {}
+  constructor(private client: EbayApiClient) { }
 
   /**
    * Find listing recommendations

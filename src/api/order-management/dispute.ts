@@ -1,5 +1,5 @@
 import type { EbayApiClient } from '@/api/client.js';
-import type { components } from '@/types/sell_fulfillment_v1_oas3.js';
+import type { components } from '@/types/sell-apps/order-management/sellFulfillmentV1Oas3.js';
 
 type AcceptPaymentDisputeRequest = components['schemas']['AcceptPaymentDisputeRequest'];
 type ContestPaymentDisputeRequest = components['schemas']['ContestPaymentDisputeRequest'];
@@ -19,7 +19,7 @@ type UpdateEvidencePaymentDisputeRequest =
 export class DisputeApi {
   private readonly basePath = '/sell/fulfillment/v1';
 
-  constructor(private client: EbayApiClient) {}
+  constructor(private client: EbayApiClient) { }
 
   /**
    * Get payment dispute details

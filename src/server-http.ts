@@ -83,7 +83,7 @@ async function createApp(): Promise<express.Application> {
     cors({
       // TODO: Restrict origin to known clients in production
       // For development, allow all origins
-      // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+
       origin: '*',
       exposedHeaders: ['Mcp-Session-Id'],
     })
@@ -176,41 +176,39 @@ async function createApp(): Promise<express.Application> {
     const ebayConfig = getEbayConfig();
     const api = new EbaySellerApi(ebayConfig);
 
-    const server = new McpServer(
-      {
-        name: 'ebay-api-mcp-server',
-        version: '1.4.0',
-        title: 'eBay API MCP Server',
-        description: 'eBay API MCP Server',
-        icons: [
-          {
-            src: './icons/512x512.png',
-            mimeType: 'image/png',
-            sizes: ['48x48'],
-          },
-          {
-            src: './icons/128x128.png',
-            mimeType: 'image/png',
-            sizes: ['128x128'],
-          },
-          {
-            src: './icons/256x256.png',
-            mimeType: 'image/png',
-            sizes: ['256x256'],
-          },
-          {
-            src: './icons/512x512.png',
-            mimeType: 'image/png',
-            sizes: ['512x512'],
-          },
-          {
-            src: './icons/1024x1024.png',
-            mimeType: 'image/png',
-            sizes: ['1024x1024'],
-          }
-        ],
-      },
-    );
+    const server = new McpServer({
+      name: 'ebay-api-mcp-server',
+      version: '1.4.0',
+      title: 'eBay API MCP Server',
+      description: 'eBay API MCP Server',
+      icons: [
+        {
+          src: './icons/512x512.png',
+          mimeType: 'image/png',
+          sizes: ['48x48'],
+        },
+        {
+          src: './icons/128x128.png',
+          mimeType: 'image/png',
+          sizes: ['128x128'],
+        },
+        {
+          src: './icons/256x256.png',
+          mimeType: 'image/png',
+          sizes: ['256x256'],
+        },
+        {
+          src: './icons/512x512.png',
+          mimeType: 'image/png',
+          sizes: ['512x512'],
+        },
+        {
+          src: './icons/1024x1024.png',
+          mimeType: 'image/png',
+          sizes: ['1024x1024'],
+        },
+      ],
+    });
 
     // Register tools
     const tools = getToolDefinitions();
@@ -370,7 +368,8 @@ async function main() {
     if (CONFIG.authEnabled) {
       console.log(`Auth Server: ${CONFIG.oauth.authServerUrl}`);
       console.log(`Required Scopes: ${CONFIG.oauth.requiredScopes.join(', ')}`);
-      console.log(`Verification Method: ${CONFIG.oauth.useIntrospection ? 'Introspection' : 'JWT'}`
+      console.log(
+        `Verification Method: ${CONFIG.oauth.useIntrospection ? 'Introspection' : 'JWT'}`
       );
     }
 
@@ -382,9 +381,7 @@ async function main() {
       console.log('Server is running!');
       console.log();
       console.log(`MCP endpoint: ${serverUrl}/`);
-      console.log(
-        `Protected Resource Metadata: ${serverUrl}/.well-known/oauth-protected-resource`
-      );
+      console.log(`Protected Resource Metadata: ${serverUrl}/.well-known/oauth-protected-resource`);
       console.log(`Health check: ${serverUrl}/health`);
       console.log();
 

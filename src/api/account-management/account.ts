@@ -15,7 +15,8 @@ type GetPaymentPoliciesResponse = components['schemas']['PaymentPolicyResponse']
 type PaymentPolicy = components['schemas']['PaymentPolicy'];
 type PaymentsProgramResponse = components['schemas']['PaymentsProgramResponse'];
 type PaymentsProgramOnboardingResponse = components['schemas']['PaymentsProgramOnboardingResponse'];
-type SellerEligibilityMultiProgramResponse = components['schemas']['SellerEligibilityMultiProgramResponse'];
+type SellerEligibilityMultiProgramResponse =
+  components['schemas']['SellerEligibilityMultiProgramResponse'];
 type SellingPrivileges = components['schemas']['SellingPrivileges'];
 type Programs = components['schemas']['Programs'];
 type OptInToProgramRequest = components['schemas']['Program'];

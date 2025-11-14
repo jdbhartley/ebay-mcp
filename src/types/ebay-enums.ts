@@ -458,7 +458,6 @@ export enum PaymentMethodType {
   OTHER = 'OTHER',
 }
 
-
 /**
  * Line Item Fulfillment Status
  *

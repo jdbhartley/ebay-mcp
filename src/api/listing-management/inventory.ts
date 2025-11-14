@@ -1,4 +1,4 @@
-import type { components } from '../../types/sell_inventory_v1_oas3.js';
+import type { components } from '../../types/sell-apps/listing-management/sell_inventory_v1_oas3.ts';
 import type { EbayApiClient } from '../client.js';
 
 type EbayOfferDetailsWithKeys = components['schemas']['EbayOfferDetailsWithKeys'];
@@ -16,7 +16,7 @@ type PublishResponse = components['schemas']['PublishResponse'];
 export class InventoryApi {
   private readonly basePath = '/sell/inventory/v1';
 
-  constructor(private client: EbayApiClient) {}
+  constructor(private client: EbayApiClient) { }
 
   /**
    * Get all inventory items
@@ -83,15 +83,11 @@ export class InventoryApi {
     }
 
     try {
-      return await this.client.put<void>(
-        `${this.basePath}/inventory_item/${sku}`,
-        inventoryItem,
-        {
-          headers: {
-            'Content-Language': 'en_US',
-          },
-        }
-      );
+      return await this.client.put<void>(`${this.basePath}/inventory_item/${sku}`, inventoryItem, {
+        headers: {
+          'Content-Language': 'en_US',
+        },
+      });
     } catch (error) {
       throw new Error(
         `Failed to create or replace inventory item: ${error instanceof Error ? error.message : 'Unknown error'}`

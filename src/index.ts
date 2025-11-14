@@ -13,10 +13,7 @@ class EbayMcpServer {
   private api: EbaySellerApi;
 
   constructor() {
-    this.server = new McpServer(
-      mcpConfig,
-
-    );
+    this.server = new McpServer(mcpConfig);
 
     // Initialize eBay API client
     this.api = new EbaySellerApi(getEbayConfig());

@@ -1,5 +1,5 @@
 import type { EbayApiClient } from '@/api/client.js';
-import type { components } from '@/types/sell_marketing_v1_oas3.js';
+import type { components } from '@/types/sell-apps/markeitng-and-promotions/sellMarketingV1Oas3.js';
 
 type AdGroupRequest = components['schemas']['CreateAdGroupRequest'];
 type BulkCreateAdRequest = components['schemas']['BulkCreateAdRequest'];
@@ -91,7 +91,7 @@ type BulkUpdateKeywordRequest = BulkUpdateKeywordBidsRequest;
 export class MarketingApi {
   private readonly basePath = '/sell/marketing/v1';
 
-  constructor(private client: EbayApiClient) {}
+  constructor(private client: EbayApiClient) { }
 
   /**
    * Get campaigns

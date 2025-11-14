@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /**
  * Setup Validation Module
  *
@@ -55,7 +54,10 @@ function parseEnvFile(filePath: string): Record<string, string> {
       let value = match[2].trim();
 
       // Remove quotes if present
-      if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+      if (
+        (value.startsWith('"') && value.endsWith('"')) ||
+        (value.startsWith("'") && value.endsWith("'"))
+      ) {
         value = value.slice(1, -1);
       }
 
@@ -153,7 +155,8 @@ function validateEnvironment(envVars: Record<string, string>): ValidationResult 
  * Check if user tokens are configured
  */
 function validateUserTokens(envVars: Record<string, string>): ValidationResult {
-  const hasRefreshToken = envVars.EBAY_USER_REFRESH_TOKEN && envVars.EBAY_USER_REFRESH_TOKEN.trim() !== '';
+  const hasRefreshToken =
+    envVars.EBAY_USER_REFRESH_TOKEN && envVars.EBAY_USER_REFRESH_TOKEN.trim() !== '';
 
   if (!hasRefreshToken) {
     return {
@@ -208,11 +211,7 @@ function validateOAuthURL(config: EbayConfig): ValidationResult {
       };
     }
 
-    const url = getOAuthAuthorizationUrl(
-      config.clientId,
-      config.redirectUri,
-      config.environment
-    );
+    const url = getOAuthAuthorizationUrl(config.clientId, config.redirectUri, config.environment);
 
     if (!url.startsWith('http')) {
       return {
@@ -347,7 +346,9 @@ function printResult(result: ValidationResult): void {
  * Display recommendations based on validation results
  */
 export function displayRecommendations(summary: ValidationSummary): void {
-  const hasUserTokens = summary.results.some((r) => r.test === 'User Tokens' && r.passed && !r.error);
+  const hasUserTokens = summary.results.some(
+    (r) => r.test === 'User Tokens' && r.passed && !r.error
+  );
 
   console.log(chalk.bold.cyan('💡 Recommendations:\n'));
 
@@ -355,7 +356,9 @@ export function displayRecommendations(summary: ValidationSummary): void {
     console.log(chalk.yellow('  ⚠️  User tokens not configured'));
     console.log(chalk.gray('     • You can only use app token for limited API access'));
     console.log(chalk.gray('     • To enable full API access, use the ebay_get_oauth_url tool'));
-    console.log(chalk.gray('     • Then save your refresh token to EBAY_USER_REFRESH_TOKEN in .env\n'));
+    console.log(
+      chalk.gray('     • Then save your refresh token to EBAY_USER_REFRESH_TOKEN in .env\n')
+    );
   }
 
   if (summary.failed > 0) {

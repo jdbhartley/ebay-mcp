@@ -47,9 +47,14 @@ export class EbayOAuthClient {
         await this.refreshUserToken();
         console.error('✅ Access token refreshed successfully from .env configuration.');
       } catch (error) {
-        console.error('❌ Failed to refresh access token:', error instanceof Error ? error.message : error);
+        console.error(
+          '❌ Failed to refresh access token:',
+          error instanceof Error ? error.message : error
+        );
         console.error('   The EBAY_USER_REFRESH_TOKEN in .env may be invalid or expired.');
-        console.error('   Please update EBAY_USER_REFRESH_TOKEN or use ebay_set_user_tokens_with_expiry tool.');
+        console.error(
+          '   Please update EBAY_USER_REFRESH_TOKEN or use ebay_set_user_tokens_with_expiry tool.'
+        );
         // Clear invalid tokens
         this.userTokens = null;
       }
@@ -275,16 +280,12 @@ export class EbayOAuthClient {
         refresh_token: this.userTokens.userRefreshToken,
       };
 
-      const response = await axios.post(
-        authUrl,
-        new URLSearchParams(params).toString(),
-        {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            Authorization: `Basic ${credentials}`,
-          },
-        }
-      );
+      const response = await axios.post(authUrl, new URLSearchParams(params).toString(), {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          Authorization: `Basic ${credentials}`,
+        },
+      });
 
       const tokenData: EbayUserToken = response.data;
 
@@ -303,7 +304,10 @@ export class EbayOAuthClient {
       };
 
       // If eBay provided a new refresh token, inform user to update .env
-      if (tokenData.refresh_token && tokenData.refresh_token !== process.env.EBAY_USER_REFRESH_TOKEN) {
+      if (
+        tokenData.refresh_token &&
+        tokenData.refresh_token !== process.env.EBAY_USER_REFRESH_TOKEN
+      ) {
         console.error('\n⚠️  eBay issued a new refresh token!');
         console.error('📝 Please update your .env file with:');
         console.error(`EBAY_USER_REFRESH_TOKEN="${tokenData.refresh_token}"\n`);
@@ -351,8 +355,7 @@ export class EbayOAuthClient {
       hasAppAccessToken: boolean;
       scopeInfo?: { tokenScopes: string[]; environmentScopes: string[]; missingScopes: string[] };
     } = {
-      hasUserToken:
-        this.userTokens !== null && !this.isUserAccessTokenExpired(this.userTokens),
+      hasUserToken: this.userTokens !== null && !this.isUserAccessTokenExpired(this.userTokens),
       hasAppAccessToken: this.appAccessToken !== null && Date.now() < this.appAccessTokenExpiry,
     };
 

@@ -101,7 +101,6 @@ export default tseslint.config(
       'n/no-process-exit': 'warn',
 
       // ===== General Best Practices =====
-      'no-console': ['warn', { allow: ['warn', 'error'] }],
       'no-debugger': 'error',
       'prefer-const': 'error',
       'no-var': 'error',

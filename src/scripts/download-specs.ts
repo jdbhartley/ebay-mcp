@@ -1,4 +1,3 @@
-
 import axios from 'axios';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -15,7 +14,7 @@ const getUrlsFromReadme = (content: string): string[] => {
   // Regex to find URLs that end with .json, specifically for OpenAPI specs
   // This assumes the README will directly link to the JSON spec files, but is less strict to allow for variations.
   const urlRegex = /(https:\/\/[^\s)]+\.json)/g;
-  const urls = Array.from(content.matchAll(urlRegex)).map(match => match[1]);
+  const urls = Array.from(content.matchAll(urlRegex)).map((match) => match[1]);
   console.log('Found URLs:', urls);
   return urls;
 };
@@ -23,7 +22,7 @@ const getUrlsFromReadme = (content: string): string[] => {
 const getSpecUrlsFromHtml = (html: string): string[] => {
   const linkRegex = /<a[^>]*?class="[^"]*\bspec-parent\b[^"]*"[^>]*?href="([^"]+)"/g;
   const matches = [...html.matchAll(linkRegex)];
-  const urls = matches.map(match => match[1]);
+  const urls = matches.map((match) => match[1]);
   // Filter out duplicates
   return [...new Set(urls)];
 };
@@ -32,7 +31,7 @@ const getFolderName = (specUrl: string): string => {
   const fileName = path.basename(specUrl);
   // mapping from file name to folder name
   // This mapping is based on the README.md structure and common API groupings
-  const folderMap: { [key: string]: string } = {
+  const folderMap: Record<string, string> = {
     // Application Settings
     'developer_analytics_v1_beta_oas3.json': 'application-settings',
     'developer_key_management_v1_oas3.json': 'application-settings',
@@ -103,7 +102,6 @@ const getFolderName = (specUrl: string): string => {
   // Default to 'other-apis' if not found in map, or use the mapped folder
   return folderMap[fileName] || 'other-apis';
 };
-
 
 const downloadFile = async (url: string, folderPath: string, fileName: string) => {
   try {

@@ -5,7 +5,7 @@ import { dirname, join } from 'path';
 import type { EbayConfig } from '@/types/ebay.js';
 import { version } from 'os';
 import { title } from 'process';
-import { Implementation } from '@modelcontextprotocol/sdk/types.js';
+import type { Implementation } from '@modelcontextprotocol/sdk/types.js';
 
 config();
 
@@ -181,14 +181,18 @@ export function validateEnvironmentConfig(): {
 export function getEbayConfig(): EbayConfig {
   const clientId = process.env.EBAY_CLIENT_ID ?? '';
   const clientSecret = process.env.EBAY_CLIENT_SECRET ?? '';
-  const environment = (process.env.EBAY_ENVIRONMENT ?? 'sandbox') as 'production' | 'sandbox'
-  const accessToken = process.env.EBAY_USER_ACCESS_TOKEN ?? ''
-  const refreshToken = process.env.EBAY_USER_REFRESH_TOKEN ?? ''
-  const appAccessToken = process.env.EBAY_APP_ACCESS_TOKEN ?? ''
+  const environment = (process.env.EBAY_ENVIRONMENT ?? 'sandbox') as 'production' | 'sandbox';
+  const accessToken = process.env.EBAY_USER_ACCESS_TOKEN ?? '';
+  const refreshToken = process.env.EBAY_USER_REFRESH_TOKEN ?? '';
+  const appAccessToken = process.env.EBAY_APP_ACCESS_TOKEN ?? '';
 
-
-
-  if (clientId === '' || clientSecret === '' || accessToken === '' || refreshToken === '' || appAccessToken === '') {
+  if (
+    clientId === '' ||
+    clientSecret === '' ||
+    accessToken === '' ||
+    refreshToken === '' ||
+    appAccessToken === ''
+  ) {
     console.error(
       'Missing required eBay credentials. Please set the follow:\n1) EBAY_CLIENT_ID\n2) EBAY_CLIENT_SECRET\n3) EBAY_USER_ACCESS_TOKEN\n4) EBAY_USER_REFRESH_TOKEN\n5) EBAY_APP_ACCESS_TOKEN in your .env file at project root'
     );
@@ -222,7 +226,6 @@ export function getAuthUrl(environment: 'production' | 'sandbox'): string {
     : 'https://api.sandbox.ebay.com/identity/v1/oauth2/token';
 }
 
-
 // fix the fn below i am attaching example from other project that is working properly with the genreate oauth
 /**
  * Generate the OAuth authorization URL for user consent
@@ -234,7 +237,7 @@ export function getOAuthAuthorizationUrl(
   environment: 'production' | 'sandbox',
   scopes?: string[],
   locale?: string,
-  state?: string,
+  state?: string
 ): string {
   // Use environment-specific scopes if no custom scopes provided
   const defaultScopes = getDefaultScopes(environment);

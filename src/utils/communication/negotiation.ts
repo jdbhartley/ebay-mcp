@@ -7,7 +7,6 @@ import { z } from 'zod';
  * Types from: src/types/sell_negotiation_v1_oas3.ts
  */
 
-
 // Reusable schema for filter parameter
 const filterSchema = z
   .string({

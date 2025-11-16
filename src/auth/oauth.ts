@@ -6,6 +6,7 @@ import type {
   EbayUserToken,
   StoredTokenData,
 } from '@/types/ebay.js';
+import { LocaleEnum } from '@/types/ebay-enums.js';
 
 /**
  * Manages eBay OAuth 2.0 authentication
@@ -26,6 +27,9 @@ export class EbayOAuthClient {
   async initialize(): Promise<void> {
     const envRefreshToken = process.env.EBAY_USER_REFRESH_TOKEN;
     const envAccessToken = process.env.EBAY_USER_ACCESS_TOKEN;
+    const envAppToken = process.env.EBAY_APP_ACCESS_TOKEN ?? '';
+    const locale = this.config?.locale || LocaleEnum.en_US;
+
 
     if (envRefreshToken && envAccessToken) {
       console.log('📝 Loading refresh token, access token and app to env file...');
@@ -34,9 +38,14 @@ export class EbayOAuthClient {
       // Note: We don't set scopes here - eBay will return the scopes when we refresh
       const now = Date.now();
       this.userTokens = {
+        clientId: this.config.clientId,
+        clientSecret: this.config.clientSecret,
         userAccessToken: envAccessToken, // Empty, will be filled by refresh
         userRefreshToken: envRefreshToken,
+        redirectUri: this.config.redirectUri,
+        envAppToken,
         tokenType: 'Bearer',
+        locale,
         userAccessTokenExpiry: now + 7200 * 1000, // Default 2 hours
         userRefreshTokenExpiry: now + 18 * 30 * 24 * 60 * 60 * 1000, // Default 18 months
         // scope is not set - will be populated by the refresh response
@@ -139,10 +148,16 @@ export class EbayOAuthClient {
     // Store tokens in memory with default expiry
     // Access tokens typically expire in 2 hours (7200 seconds)
     // Refresh tokens typically expire in 18 months
+    const now = Date.now();
     this.userTokens = {
+      clientId: this.config.clientId,
+      clientSecret: this.config.clientSecret,
+      redirectUri: this.config.redirectUri,
       userAccessToken: accessToken,
       userRefreshToken: refreshToken,
       tokenType: 'Bearer',
+      userAccessTokenExpiry: now + 7200 * 1000, // Default 2 hours
+      userRefreshTokenExpiry: now + 18 * 30 * 24 * 60 * 60 * 1000, // Default 18 months
     };
   }
 
@@ -205,7 +220,7 @@ export class EbayOAuthClient {
       throw new Error('Redirect URI is required for authorization code exchange');
     }
 
-    const authUrl = getAuthUrl(this.config.environment);
+    const authUrl = getAuthUrl(this.config.clientId, this.config.redirectUri, this.config.environment, this.config.locale, 'login', 'code');
     const credentials = Buffer.from(`${this.config.clientId}:${this.config.clientSecret}`).toString(
       'base64'
     );
@@ -231,6 +246,9 @@ export class EbayOAuthClient {
       // Store the user tokens in memory
       const now = Date.now();
       this.userTokens = {
+        clientId: this.config.clientId,
+        clientSecret: this.config.clientSecret,
+        redirectUri: this.config.redirectUri,
         userAccessToken: tokenData.access_token,
         userRefreshToken: tokenData.refresh_token,
         tokenType: tokenData.token_type,
@@ -264,7 +282,7 @@ export class EbayOAuthClient {
       throw new Error('No user tokens available to refresh');
     }
 
-    const authUrl = getAuthUrl(this.config.environment);
+    const authUrl = getAuthUrl(this.config.clientId, this.config.redirectUri, this.config.environment, this.config.locale, 'login', 'code');
     const credentials = Buffer.from(`${this.config.clientId}:${this.config.clientSecret}`).toString(
       'base64'
     );
@@ -290,6 +308,9 @@ export class EbayOAuthClient {
       // Update tokens in memory
       const now = Date.now();
       this.userTokens = {
+        clientId: this.config.clientId,
+        clientSecret: this.config.clientSecret,
+        redirectUri: this.config.redirectUri,
         userAccessToken: tokenData.access_token,
         userRefreshToken: tokenData.refresh_token || this.userTokens.userRefreshToken, // Use new refresh token if provided
         tokenType: tokenData.token_type,

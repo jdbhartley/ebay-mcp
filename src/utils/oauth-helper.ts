@@ -29,10 +29,10 @@ export function generateAuthUrl(
  * Start a local server to capture OAuth callback
  */
 export async function startCallbackServer(
-  port: number = 3000,
-  timeout: number = 300000 // 5 minutes
+  port = 3000,
+  timeout = 300000 // 5 minutes
 ): Promise<{ server: Server; codePromise: Promise<OAuthCallbackResult> }> {
-  return new Promise((resolve) => {
+  return await new Promise((resolve) => {
     let callbackResolver: (result: OAuthCallbackResult) => void;
 
     const codePromise = new Promise<OAuthCallbackResult>((res) => {
@@ -145,7 +145,7 @@ export async function startCallbackServer(
                   }
                   h1 {
                     color: #f44336;
-                    margin-bottom: 10px;
+                    margin-bottom: 10px; /* Fix: Changed color to red for error */
                   }
                   p {
                     color: #666;
@@ -165,14 +165,18 @@ export async function startCallbackServer(
                   <div class="error-icon">❌</div>
                   <h1>Authorization Failed</h1>
                   <p>There was an error during authorization.</p>
-                  <div class="error">${errorDescription || error}</div>
+                  <div class="error">${errorDescription ?? error}</div>
                   <p>Please return to your terminal and try again.</p>
                 </div>
+                <script>
+                  // Close the window after a short delay
+                  setTimeout(() => window.close(), 5000);
+                </script>
               </body>
             </html>
           `);
 
-          callbackResolver({ error, errorDescription: errorDescription || undefined });
+          callbackResolver({ error, errorDescription: errorDescription ?? undefined });
         }
       } else {
         res.writeHead(404);
@@ -218,7 +222,7 @@ export async function interactiveOAuthFlow(
   }
 
   // Extract port from redirect URI
-  const portMatch = redirectUri.match(/:(\d+)/);
+  const portMatch = /:(\d+)/.exec(redirectUri);
   const port = portMatch ? parseInt(portMatch[1], 10) : 3000;
 
   // Start callback server

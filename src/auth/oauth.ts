@@ -26,6 +26,7 @@ export class EbayOAuthClient {
   async initialize(): Promise<void> {
     const envRefreshToken = process.env.EBAY_USER_REFRESH_TOKEN;
     const envAccessToken = process.env.EBAY_USER_ACCESS_TOKEN;
+    const envAppToken = process.env.EBAY_APP_ACCESS_TOKEN ?? '';
 
     if (envRefreshToken && envAccessToken) {
       console.log('📝 Loading refresh token, access token and app to env file...');
@@ -36,6 +37,7 @@ export class EbayOAuthClient {
       this.userTokens = {
         userAccessToken: envAccessToken, // Empty, will be filled by refresh
         userRefreshToken: envRefreshToken,
+        envAppToken,
         tokenType: 'Bearer',
         userAccessTokenExpiry: now + 7200 * 1000, // Default 2 hours
         userRefreshTokenExpiry: now + 18 * 30 * 24 * 60 * 60 * 1000, // Default 18 months

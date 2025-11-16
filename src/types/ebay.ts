@@ -55,9 +55,10 @@ export interface StoredTokenData {
   userAccessToken: string;
   userRefreshToken: string;
   tokenType: string;
+  envAppToken?: string;
   userAccessTokenExpiry?: number; // Unix timestamp in milliseconds
   userRefreshTokenExpiry?: number; // Unix timestamp in milliseconds
-  scope?: string;
+  scope?: string; // Optional scope string
 }
 
 export interface EbayApiResponse<T = unknown> {

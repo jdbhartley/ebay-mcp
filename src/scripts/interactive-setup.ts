@@ -25,7 +25,7 @@
 
 import prompts from 'prompts';
 import chalk from 'chalk';
-import { readFileSync, writeFileSync, existsSync, unlinkSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import {
@@ -43,7 +43,6 @@ import {
   displayScopeCategories,
   getRecommendedScopes,
   displayScopeVerification,
-  getAllScopesString,
 } from '../utils/scope-helper.js';
 import { detectLLMClients, configureLLMClient } from '../utils/llm-client-detector.js';
 import { validateSetup, displayRecommendations } from '../utils/setup-validator.js';
@@ -110,7 +109,7 @@ function showHelp() {
   );
   console.log(
     chalk.yellow('  --env=ENV            ') +
-      chalk.gray('Set environment (sandbox|production)')
+    chalk.gray('Set environment (sandbox|production)')
   );
   console.log(
     chalk.yellow('  (no options)         ') + chalk.gray('Run interactive setup wizard\n')
@@ -333,14 +332,16 @@ async function validateAndGenerateTokens(
       // Test with Identity API
       console.log(chalk.cyan('  → Verifying credentials with eBay Identity API...'));
       const api = new EbaySellerApi(ebayConfig);
-      await api.initialize(); // Initialize uses the environment variables we set
+      await api.initialize();
 
       const userInfo = await api.identity.getUser();
+      if (userInfo) {
+        console.log(chalk.green('\n✓ Successfully validated credentials!\n'));
+        console.log(chalk.bold.white('📋 Your eBay Account Information:\n'));
+        console.log(userInfo);
+        console.log('');
+      }
 
-      console.log(chalk.green('\n✓ Successfully validated credentials!\n'));
-      console.log(chalk.bold.white('📋 Your eBay Account Information:\n'));
-      console.log(userInfo);
-      console.log('');
 
       // Display scope verification
       const authClient = api.getAuthClient();
@@ -577,15 +578,15 @@ function displayQuickStart(): void {
   console.log(chalk.bold.white('Resources:\n'));
   console.log(
     chalk.gray('  📖 Documentation: ') +
-      chalk.blue.underline('https://github.com/YosefHayim/ebay-api-mcp-server#readme')
+    chalk.blue.underline('https://github.com/YosefHayim/ebay-api-mcp-server#readme')
   );
   console.log(
     chalk.gray('  🐛 Report Issues:  ') +
-      chalk.blue.underline('https://github.com/YosefHayim/ebay-api-mcp-server/issues')
+    chalk.blue.underline('https://github.com/YosefHayim/ebay-api-mcp-server/issues')
   );
   console.log(
     chalk.gray('  💬 Get Support:    ') +
-      chalk.blue.underline('https://github.com/YosefHayim/ebay-api-mcp-server/discussions\n')
+    chalk.blue.underline('https://github.com/YosefHayim/ebay-api-mcp-server/discussions\n')
   );
 }
 

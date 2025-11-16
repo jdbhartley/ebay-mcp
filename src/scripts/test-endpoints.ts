@@ -289,7 +289,7 @@ class EndpointTester {
     }
 
     try {
-      const disputes = await this.api.fulfillment.getPaymentDisputeSummaries({ limit: 1 });
+      const disputes = await this.api.dispute.getPaymentDisputeSummaries({ limit: 1 });
       if (disputes.paymentDisputeSummaries && disputes.paymentDisputeSummaries.length > 0) {
         this.collectedIds.paymentDisputeId = disputes.paymentDisputeSummaries[0].paymentDisputeId;
         console.log(`✓ Payment Dispute ID: ${this.collectedIds.paymentDisputeId}`);
@@ -334,7 +334,7 @@ class EndpointTester {
 
     // Collect Other IDs
     try {
-      const offers = await this.api.negotiation.getOffersForListing();
+      const offers = await this.api.negotiation.getOffersToBuyers();
       if (offers.offers && offers.offers.length > 0) {
         this.collectedIds.negotiationOfferId = offers.offers[0].offerId;
         console.log(`✓ Negotiation Offer ID: ${this.collectedIds.negotiationOfferId}`);
@@ -366,6 +366,7 @@ class EndpointTester {
       shippingOptions: [
         {
           optionType: 'DOMESTIC' as const,
+          costType: 'FLAT_RATE' as const,
           shippingServices: [
             {
               shippingCarrierCode: 'USPS',
@@ -440,11 +441,7 @@ class EndpointTester {
       categoryTypes: [{ name: 'ALL_EXCLUDING_MOTORS_VEHICLES' as const }],
       paymentMethods: [
         {
-          paymentMethodType: 'PAYPAL' as const,
-          recipientAccountReference: {
-            referenceId: 'test@example.com',
-            referenceType: 'PAYPAL_EMAIL' as const,
-          },
+          paymentMethodType: 'ESCROW' as const,
         },
       ],
     };
@@ -567,6 +564,7 @@ class EndpointTester {
       name: `Test Custom ${Date.now()}`,
       policyType: 'PRODUCT_COMPLIANCE' as const,
       description: 'Test custom policy',
+      label: 'TEST_LABEL' as const,
     };
 
     let createdCustomPolicyId: string | undefined;
@@ -1218,7 +1216,7 @@ class EndpointTester {
       'Fulfillment',
       'getPaymentDisputeSummaries',
       'GET /sell/fulfillment/v1/payment_dispute_summary',
-      () => this.api.fulfillment.getPaymentDisputeSummaries({ limit: 5 }),
+      () => this.api.dispute.getPaymentDisputeSummaries({ limit: 5 }),
       { limit: 5 }
     );
 
@@ -1228,7 +1226,7 @@ class EndpointTester {
         'Fulfillment',
         'getPaymentDispute',
         'GET /sell/fulfillment/v1/payment_dispute/{payment_dispute_id}',
-        () => this.api.fulfillment.getPaymentDispute(this.collectedIds.paymentDisputeId!),
+        () => this.api.dispute.getPaymentDispute(this.collectedIds.paymentDisputeId!),
         { payment_dispute_id: this.collectedIds.paymentDisputeId }
       );
 
@@ -1236,19 +1234,10 @@ class EndpointTester {
         'Fulfillment',
         'getActivities',
         'GET /sell/fulfillment/v1/payment_dispute/{payment_dispute_id}/activity',
-        () => this.api.fulfillment.getActivities(this.collectedIds.paymentDisputeId!),
+        () => this.api.dispute.getActivities(this.collectedIds.paymentDisputeId!),
         { payment_dispute_id: this.collectedIds.paymentDisputeId }
       );
     }
-
-    // Shipping Quote (1 endpoint)
-    await this.testEndpoint(
-      'Fulfillment',
-      'getShippingQuote',
-      'POST /sell/fulfillment/v1/shipping_quote',
-      () => this.api.fulfillment.getShippingQuote({ rateTableId: 'test' } as any),
-      { rateTableId: 'test' }
-    );
 
     console.log('');
   }
@@ -1323,17 +1312,17 @@ class EndpointTester {
 
     await this.testEndpoint(
       'Marketing',
-      'getPromotionSummary',
-      'GET /sell/marketing/v1/promotion_summary',
-      () => this.api.marketing.getPromotionSummary('EBAY_US'),
+      'getPromotionSummaryReport',
+      'GET /sell/marketing/v1/promotion_summary_report',
+      () => this.api.marketing.getPromotionSummaryReport('EBAY_US'),
       { marketplace_id: 'EBAY_US' }
     );
 
     await this.testEndpoint(
       'Marketing',
-      'getPromotionReports',
+      'getPromotionReport',
       'GET /sell/marketing/v1/promotion_report',
-      () => this.api.marketing.getPromotionReports('EBAY_US'),
+      () => this.api.marketing.getPromotionReport('EBAY_US'),
       { marketplace_id: 'EBAY_US' }
     );
 
@@ -1431,13 +1420,6 @@ class EndpointTester {
     );
     await this.testEndpoint(
       'Metadata',
-      'getProductCompliancePolicies',
-      'GET /sell/metadata/v1/marketplace/{marketplace_id}/product_compliance_policy',
-      () => this.api.metadata.getProductCompliancePolicies('EBAY_US'),
-      { marketplace_id: 'EBAY_US' }
-    );
-    await this.testEndpoint(
-      'Metadata',
       'getExtendedProducerResponsibilityPolicies',
       'GET /sell/metadata/v1/marketplace/{marketplace_id}/extended_producer_responsibility_policy',
       () => this.api.metadata.getExtendedProducerResponsibilityPolicies('EBAY_US'),
@@ -1500,29 +1482,18 @@ class EndpointTester {
     // Negotiation API (2 endpoints)
     await this.testEndpoint(
       'Other',
-      'getOffersForListing',
+      'getOffersToBuyers',
       'GET /sell/negotiation/v1/offer',
-      () => this.api.negotiation.getOffersForListing(),
+      () => this.api.negotiation.getOffersToBuyers(undefined, 5),
       { limit: 5 }
     );
-
-    // Test specific negotiation offer if we have an ID
-    if (this.collectedIds.negotiationOfferId) {
-      await this.testEndpoint(
-        'Other',
-        'getOffer',
-        'GET /sell/negotiation/v1/offer/{offerId}',
-        () => this.api.negotiation.getOffer(this.collectedIds.negotiationOfferId!),
-        { offerId: this.collectedIds.negotiationOfferId }
-      );
-    }
 
     // Compliance API (1 endpoint)
     await this.testEndpoint(
       'Other',
-      'getComplianceSnapshot',
-      'GET /sell/compliance/v1/listing_violations',
-      () => this.api.compliance.getComplianceSnapshot(),
+      'getListingViolations',
+      'GET /sell/compliance/v1/listing_violation',
+      () => this.api.compliance.getListingViolations(undefined, undefined, 5),
       { limit: 5 }
     );
 

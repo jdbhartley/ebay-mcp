@@ -7,7 +7,7 @@ import { type LocaleEnum } from "./ebay-enums.js";
 export interface EbayConfig {
   clientId: string;
   clientSecret: string;
-  redirectUri?: string;
+  redirectUri: string;
   locale?: LocaleEnum;
   environment: 'production' | 'sandbox';
   accessToken?: string;
@@ -58,6 +58,9 @@ export interface StoredTokenData {
   userAccessToken: string;
   userRefreshToken: string;
   tokenType: string;
+  clientId: string
+  clientSecret: string
+  redirectUri: string
   locale?: LocaleEnum;
   envAppToken?: string;
   userAccessTokenExpiry?: number; // Unix timestamp in milliseconds

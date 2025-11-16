@@ -30,6 +30,7 @@ export class EbayOAuthClient {
     const envAppToken = process.env.EBAY_APP_ACCESS_TOKEN ?? '';
     const locale = this.config?.locale || LocaleEnum.en_US;
 
+
     if (envRefreshToken && envAccessToken) {
       console.log('📝 Loading refresh token, access token and app to env file...');
 
@@ -37,8 +38,11 @@ export class EbayOAuthClient {
       // Note: We don't set scopes here - eBay will return the scopes when we refresh
       const now = Date.now();
       this.userTokens = {
+        clientId: this.config.clientId,
+        clientSecret: this.config.clientSecret,
         userAccessToken: envAccessToken, // Empty, will be filled by refresh
         userRefreshToken: envRefreshToken,
+        redirectUri: this.config.redirectUri,
         envAppToken,
         tokenType: 'Bearer',
         locale,
@@ -269,7 +273,7 @@ export class EbayOAuthClient {
       throw new Error('No user tokens available to refresh');
     }
 
-    const authUrl = getAuthUrl(this.config.environment);
+    const authUrl = getAuthUrl(this.config.clientId, this.config.redirectUri, this.config.environment, this.config.locale, 'login', 'code');
     const credentials = Buffer.from(`${this.config.clientId}:${this.config.clientSecret}`).toString(
       'base64'
     );

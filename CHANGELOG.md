@@ -7,6 +7,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.1] - 2025-01-16
+
+### Fixed
+- **OAuth Authorization URL Generation**: Corrected eBay OAuth 2.0 endpoint configuration
+  - Changed authorization endpoint from `auth.ebay.com` to `auth2.ebay.com` (correct eBay OAuth 2.0 endpoint)
+  - Fixed production endpoint: `https://auth2.ebay.com/oauth2/authorize`
+  - Fixed sandbox endpoint: `https://auth2.sandbox.ebay.com/oauth2/authorize`
+  - Added required `hd` parameter to authorization URL (eBay requirement)
+  - Added `state` parameter (always included, even if empty, following OAuth 2.0 best practices)
+  - Generated URLs now match eBay's official OAuth flow format
+
+### Changed
+- **Scopes Handling**: Improved OAuth scope management
+  - Enhanced documentation to clarify that scopes are optional
+  - eBay automatically grants appropriate scopes based on application keyset configuration when not specified
+  - Updated function to use default environment-specific scopes when custom scopes are not provided
+  - Maintained backward compatibility with custom scope specifications
+
+### Testing
+- **Test Suite Updates**: Updated OAuth URL generation tests
+  - All 21 scope validation tests passing
+  - Updated test expectations to verify `auth2.ebay.com` endpoint
+  - Added validation for new required parameters (`hd`, `state`)
+  - Fixed test parameter ordering for state parameter validation
+
+### Quality
+- **Code Quality**: Removed deprecated field from MCP configuration
+  - Removed unsupported `description` field from `mcpConfig` (TypeScript compilation fix)
+  - Improved type safety and compliance with MCP SDK Implementation type
+
 ## [1.4.0] - 2025-01-13
 
 ### Changed

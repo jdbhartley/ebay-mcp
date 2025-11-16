@@ -282,7 +282,7 @@ export function getOAuthAuthorizationUrl(
 
 export const mcpConfig: Implementation = {
   name: 'eBay API Model Context Protocol Server',
-  version: '1.4.0',
+  version: '1.4.1',
   title: 'eBay API Model Context Protocol Server',
   websiteUrl: 'https://github.com/ebay/ebay-mcp-server',
   icons: [

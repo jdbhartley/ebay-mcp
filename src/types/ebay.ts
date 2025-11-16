@@ -2,10 +2,13 @@
  * Core eBay API types
  */
 
+import { type LocaleEnum } from "./ebay-enums.js";
+
 export interface EbayConfig {
   clientId: string;
   clientSecret: string;
   redirectUri?: string;
+  locale?: LocaleEnum;
   environment: 'production' | 'sandbox';
   accessToken?: string;
   refreshToken?: string;
@@ -55,6 +58,7 @@ export interface StoredTokenData {
   userAccessToken: string;
   userRefreshToken: string;
   tokenType: string;
+  locale?: LocaleEnum;
   envAppToken?: string;
   userAccessTokenExpiry?: number; // Unix timestamp in milliseconds
   userRefreshTokenExpiry?: number; // Unix timestamp in milliseconds

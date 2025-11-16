@@ -5,7 +5,6 @@ import { dirname, join } from 'path';
 import type { EbayConfig } from '@/types/ebay.js';
 import type { Implementation } from '@modelcontextprotocol/sdk/types.js';
 import { LocaleEnum } from '@/types/ebay-enums.js';
-import { prompt } from 'prompts';
 
 config();
 
